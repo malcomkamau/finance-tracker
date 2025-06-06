@@ -195,7 +195,32 @@ function resetFilters() {
     renderCharts(filteredTransactions);
 }
 
+function renderPaginationControls(totalItems) {
+    const totalPages = Math.ceil(totalItems / rowsPerPage);
+    const container = document.getElementById("paginationControls");
+    if (!container) return;
+    container.innerHTML = "";
+
+    for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement("button");
+        btn.textContent = i;
+        btn.className = `mx-1 px-3 py-1 rounded ${i === currentPage ? 'bg-blue-600 text-white' : 'bg-gray-200'}`;
+        btn.addEventListener("click", () => {
+            currentPage = i;
+            renderTransactionsTable(filteredTransactions);
+        });
+        container.appendChild(btn);
+    }
+}
+
+let currentPage = 1;
+const rowsPerPage = 10;
+
 function renderTransactionsTable(transactions) {
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    const paginated = transactions.slice(start, end);
+    
     const table = document.getElementById("transactionTable");
     if (!table) return;
 
@@ -226,7 +251,7 @@ function renderTransactionsTable(transactions) {
     </tr>
   `;
 
-    tbody.innerHTML = transactions.map(t => {
+    tbody.innerHTML = paginated.map(t => {
         const quantity = Number(t.Quantity) || 0;
         const pricePerUnit = Number(t["Price Per Unit"]) || 0;
         const total = quantity * pricePerUnit;
@@ -258,9 +283,13 @@ function renderTransactionsTable(transactions) {
 
     attachEditDeleteListeners(tbody);
 
-    // Update totals footer
+    // Update totals footer — you might want to update totals based on **all filtered transactions**, so keep original transactions here
     updateTableFooter(transactions, tfoot);
+
+    // Render or update pagination controls here (assuming you have a function)
+    renderPaginationControls(transactions.length);
 }
+
 
 function attachEditDeleteListeners(tbody) {
     tbody.querySelectorAll(".edit-btn").forEach(btn => {
