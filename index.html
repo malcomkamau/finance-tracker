@@ -2,73 +2,92 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Finance Tracker</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.css"/>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f5f5f5; }
+    .summary { margin-top: 20px; }
+    canvas { max-width: 100%; height: 300px; }
+    .filters input, .filters select { margin-right: 10px; margin-bottom: 10px; }
+    .charts { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 30px; }
+    .charts canvas { flex: 1 1 400px; }
+  </style>
 </head>
 <body>
-  <div id="dashboard">
-    <h2>Finance Dashboard</h2>
-    <div id="summaryStats">
-      <div>Total Income: <span id="totalIncome">0</span></div>
-      <div>Total Expense: <span id="totalExpense">0</span></div>
-      <div>Balance: <span id="balance">0</span></div>
-    </div>
 
-    <canvas id="categoryChart"></canvas>
-    <canvas id="timeChart"></canvas>
-  </div>
+  <h1>Finance Tracker</h1>
 
   <form id="transactionForm">
-    <h3>Add New Transaction</h3>
-    <input type="text" id="description" placeholder="Description" required />
-    <input type="number" id="amount" placeholder="Amount" required />
-    <select id="type" required>
-      <option value="">Select Type</option>
-      <option value="income">Income</option>
-      <option value="expense">Expense</option>
-    </select>
-    <input type="date" id="date" required />
+    <h2>Add Transaction</h2>
+    <input name="Date" type="date" required placeholder="Date" />
+    <input name="Item Name" type="text" required placeholder="Item Name" />
+    <input name="Category" type="text" placeholder="Category" />
+    <input name="Quantity" type="number" required step="1" placeholder="Quantity" />
+    <input name="Price Per Unit" type="number" required step="0.01" placeholder="Price Per Unit" />
+    <input name="Vendor" type="text" placeholder="Vendor" />
+    <input name="Payment Method" type="text" placeholder="Payment Method" />
+    <input name="Notes" type="text" placeholder="Notes" />
     <button type="submit">Add Transaction</button>
   </form>
 
-  <div id="filters">
-    <input type="text" id="filterDescription" placeholder="Search description..." />
-    <select id="filterType">
-      <option value="">All Types</option>
-      <option value="income">Income</option>
-      <option value="expense">Expense</option>
-    </select>
-    <input type="date" id="filterStartDate" />
-    <input type="date" id="filterEndDate" />
-    <button id="applyFilters">Apply Filters</button>
-    <button id="clearFilters">Clear Filters</button>
+  <div class="filters">
+    <h2>Filters</h2>
+    <input id="searchText" type="text" placeholder="Search..." />
+    <input id="startDate" type="date" />
+    <input id="endDate" type="date" />
+    <select id="categoryFilter"></select>
+    <select id="paymentMethodFilter"></select>
+    <button id="applyFiltersBtn">Apply Filters</button>
+    <button id="resetFiltersBtn">Reset Filters</button>
+  </div>
+
+  <div class="summary">
+    <strong>Total Transactions:</strong> <span id="totalTransactions">0</span><br />
+    <strong>Total Quantity:</strong> <span id="totalQuantity">0</span><br />
+    <strong>Total Spending:</strong> $<span id="totalSpending">0.00</span>
   </div>
 
   <table id="transactionTable">
-    <thead>
-      <tr>
-        <th>Description</th>
-        <th>Amount</th>
-        <th>Type</th>
-        <th>Date</th>
-      </tr>
-    </thead>
+    <thead></thead>
     <tbody></tbody>
-    <tfoot>
-      <tr>
-        <td>Total</td>
-        <td id="totalAmount">0</td>
-        <td></td>
-        <td></td>
-      </tr>
-    </tfoot>
+    <tfoot></tfoot>
   </table>
 
-  <!-- Toast notification container -->
-  <div id="toastContainer"></div>
+  <div>
+    <h2>Export Options</h2>
+    <label><input type="checkbox" id="exportFiltered" /> Export Filtered Data Only</label><br />
+    <button id="exportCSV">Export CSV</button>
+    <button id="exportExcel">Export Excel</button>
+    <button id="exportPDF">Export PDF</button>
+  </div>
 
-  <script src="main.js"></script>
-  <script src="toast.js"></script>
+  <div class="charts">
+    <div>
+      <h3>Category Chart</h3>
+      <canvas id="categoryChart"></canvas>
+    </div>
+    <div>
+      <h3>Time Chart</h3>
+      <canvas id="timeChart"></canvas>
+    </div>
+    <div>
+      <h3>Dashboard Category Chart</h3>
+      <canvas id="dashboardCategoryChart"></canvas>
+    </div>
+    <div>
+      <h3>Dashboard Time Chart</h3>
+      <canvas id="dashboardTimeChart"></canvas>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="your-script.js"></script> <!-- Replace with actual JS filename -->
 </body>
 </html>
