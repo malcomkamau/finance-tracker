@@ -69,7 +69,7 @@
     </table>
 
     <script>
-      const BASE_URL = 'https://finance-tracker-backend.onrender.com';
+      const BASE_URL = "https://finance-tracker-backend.onrender.com";
 
       // Submit form
       document
@@ -95,6 +95,10 @@
       // Load transactions into table
       async function loadTransactions() {
         const res = await fetch(`${BASE_URL}/api/data`);
+        if (!res.ok) {
+          console.error("Failed to fetch data:", await res.text());
+          return;
+        }
         const data = await res.json();
 
         const thead = document.querySelector("#transactionTable thead");

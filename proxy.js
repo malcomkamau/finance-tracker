@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-const SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+const SCRIPT_URL = 'hhttps://script.google.com/macros/s/AKfycbyN6WD1uZzFFC7cZCKOvElma-6ibLBnJr0ClMFAYErBmYylGP5v9lkbQu6z0p1khjppEw/exec';
 
 app.post('/api/submit', async (req, res) => {
   try {
