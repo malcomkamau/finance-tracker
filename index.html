@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Finance Tracker</title>
+    <style>
+      body {
+        font-family: Arial;
+        margin: 2rem;
+      }
+      table,
+      th,
+      td {
+        border: 1px solid #ccc;
+        border-collapse: collapse;
+        padding: 0.5rem;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      input,
+      select {
+        margin: 0.5rem 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Add Transaction</h2>
+    <form id="transactionForm">
+      <input type="date" name="Date" required /><br />
+      <input
+        type="text"
+        name="Item Name"
+        placeholder="Item Name"
+        required
+      /><br />
+      <input
+        type="text"
+        name="Category"
+        placeholder="Category"
+        required
+      /><br />
+      <input
+        type="number"
+        name="Quantity"
+        placeholder="Quantity"
+        required
+      /><br />
+      <input
+        type="number"
+        name="Price Per Unit"
+        placeholder="Price Per Unit"
+        step="0.01"
+        required
+      /><br />
+      <input type="text" name="Vendor" placeholder="Vendor" /><br />
+      <input
+        type="text"
+        name="Payment Method"
+        placeholder="Payment Method"
+      /><br />
+      <input type="text" name="Notes" placeholder="Notes" /><br />
+      <button type="submit">Submit</button>
+    </form>
+
+    <h2>Transaction List</h2>
+    <table id="transactionTable">
+      <thead></thead>
+      <tbody></tbody>
+    </table>
+
+    <script>
+      const API_URL = "http://localhost:3000/api";
+
+      // Submit form
+      document
+        .getElementById("transactionForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const form = e.target;
+          const data = Object.fromEntries(new FormData(form));
+          data["Quantity"] = parseFloat(data["Quantity"]);
+          data["Price Per Unit"] = parseFloat(data["Price Per Unit"]);
+
+          await fetch(API_URL + "/submit", {
+            // <-- POST via local server
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
+
+          form.reset();
+          loadTransactions();
+        });
+
+      // Load transactions into table
+      async function loadTransactions() {
+        const res = await fetch(API_URL + "/data");
+        const data = await res.json();
+
+        const thead = document.querySelector("#transactionTable thead");
+        const tbody = document.querySelector("#transactionTable tbody");
+        thead.innerHTML = "";
+        tbody.innerHTML = "";
+
+        if (data.length === 0) return;
+
+        // Header
+        const headerRow = document.createElement("tr");
+        Object.keys(data[0]).forEach((key) => {
+          const th = document.createElement("th");
+          th.textContent = key;
+          headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+
+        // Rows
+        data.forEach((row) => {
+          const tr = document.createElement("tr");
+          Object.values(row).forEach((value) => {
+            const td = document.createElement("td");
+            td.textContent = value;
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+      }
+
+      loadTransactions(); // Initial load
+    </script>
+  </body>
+</html>
