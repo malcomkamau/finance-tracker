@@ -13,6 +13,7 @@
         border: 1px solid #ccc;
         border-collapse: collapse;
         padding: 0.5rem;
+        text-align: left;
       }
       th {
         background-color: #f2f2f2;
@@ -21,61 +22,54 @@
       select {
         margin: 0.5rem 0;
       }
+      button {
+        margin-top: 0.5rem;
+        padding: 0.4rem 1rem;
+        cursor: pointer;
+      }
+      #filters > * {
+        margin-right: 1rem;
+        margin-bottom: 0.5rem;
+      }
+      tfoot td {
+        font-weight: bold;
+        background-color: #eee;
+      }
     </style>
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- jsPDF and AutoTable -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <!-- SheetJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   </head>
   <body>
     <h2>Add Transaction</h2>
     <form id="transactionForm">
       <input type="date" name="Date" required /><br />
-      <input
-        type="text"
-        name="Item Name"
-        placeholder="Item Name"
-        required
-      /><br />
-      <input
-        type="text"
-        name="Category"
-        placeholder="Category"
-        required
-      /><br />
-      <input
-        type="number"
-        name="Quantity"
-        placeholder="Quantity"
-        required
-      /><br />
-      <input
-        type="number"
-        name="Price Per Unit"
-        placeholder="Price Per Unit"
-        step="0.01"
-        required
-      /><br />
+      <input type="text" name="Item Name" placeholder="Item Name" required /><br />
+      <input type="text" name="Category" placeholder="Category" required /><br />
+      <input type="number" name="Quantity" placeholder="Quantity" required /><br />
+      <input type="number" name="Price Per Unit" placeholder="Price Per Unit" step="0.01" required /><br />
       <input type="text" name="Vendor" placeholder="Vendor" /><br />
-      <input
-        type="text"
-        name="Payment Method"
-        placeholder="Payment Method"
-      /><br />
+      <input type="text" name="Payment Method" placeholder="Payment Method" /><br />
       <input type="text" name="Notes" placeholder="Notes" /><br />
       <button type="submit">Submit</button>
     </form>
 
     <h3>Filter Transactions</h3>
     <div id="filters">
-      <input
-        type="text"
-        id="searchText"
-        placeholder="Search by item/vendor/category"
-      />
+      <input type="text" id="searchText" placeholder="Search by item/vendor/category" />
       <input type="date" id="startDate" />
       <input type="date" id="endDate" />
       <select id="categoryFilter">
         <option value="">All Categories</option>
+        <!-- Dynamically filled -->
+      </select>
+      <select id="paymentMethodFilter">
+        <option value="">All Payment Methods</option>
+        <!-- Dynamically filled -->
       </select>
       <button onclick="applyFilters()">Apply Filters</button>
       <button onclick="resetFilters()">Reset</button>
@@ -88,38 +82,41 @@
     <canvas id="timeChart" width="600" height="300"></canvas>
 
     <h3>Export Options</h3>
+    <label><input type="checkbox" id="exportFiltered" checked /> Export Filtered Data Only</label><br />
     <button onclick="exportToCSV()">Export CSV</button>
+    <button onclick="exportToExcel()">Export Excel</button>
     <button onclick="exportToPDF()">Export PDF</button>
 
     <h2>Transaction List</h2>
     <table id="transactionTable">
       <thead></thead>
       <tbody></tbody>
+      <tfoot></tfoot>
     </table>
 
     <script>
       const BASE_URL = "https://finance-tracker-97jz.onrender.com";
 
-      document
-        .getElementById("transactionForm")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const form = e.target;
-          const data = Object.fromEntries(new FormData(form));
-          data["Quantity"] = parseFloat(data["Quantity"]);
-          data["Price Per Unit"] = parseFloat(data["Price Per Unit"]);
+      // Submit form
+      document.getElementById("transactionForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const data = Object.fromEntries(new FormData(form));
+        data["Quantity"] = parseFloat(data["Quantity"]);
+        data["Price Per Unit"] = parseFloat(data["Price Per Unit"]);
 
-          await fetch(`${BASE_URL}/api/submit`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
-          });
-
-          form.reset();
-          loadTransactions();
+        await fetch(`${BASE_URL}/api/submit`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
         });
 
-      let fullData = [];
+        form.reset();
+        loadTransactions();
+      });
+
+      let fullData = []; // Global data
+      let filteredData = []; // Filtered data
 
       async function loadTransactions() {
         try {
@@ -127,7 +124,10 @@
           const data = await res.json();
 
           fullData = data;
+          filteredData = data;
+
           populateCategoryFilter(data);
+          populatePaymentMethodFilter(data);
           displayTable(data);
           updateCharts(data);
         } catch (err) {
@@ -138,57 +138,106 @@
       function displayTable(data) {
         const thead = document.querySelector("#transactionTable thead");
         const tbody = document.querySelector("#transactionTable tbody");
+        const tfoot = document.querySelector("#transactionTable tfoot");
         thead.innerHTML = "";
         tbody.innerHTML = "";
+        tfoot.innerHTML = "";
 
         if (data.length === 0) return;
 
+        // Add a 'Total' column header at the end
+        const keys = Object.keys(data[0]);
         const headerRow = document.createElement("tr");
-        Object.keys(data[0]).forEach((key) => {
+        keys.forEach((key) => {
           const th = document.createElement("th");
           th.textContent = key;
           headerRow.appendChild(th);
         });
+        const totalHeader = document.createElement("th");
+        totalHeader.textContent = "Total";
+        headerRow.appendChild(totalHeader);
         thead.appendChild(headerRow);
+
+        let totalQuantity = 0;
+        let totalAmount = 0;
 
         data.forEach((row) => {
           const tr = document.createElement("tr");
-          Object.values(row).forEach((value) => {
+
+          keys.forEach((key) => {
             const td = document.createElement("td");
-            td.textContent = value;
+            let value = row[key];
+            // Format date nicely: YYYY-MM-DD to MMM DD, YYYY
+            if (key === "Date" && value) {
+              const d = new Date(value);
+              value = d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+            }
+            td.textContent = value ?? "";
             tr.appendChild(td);
           });
+
+          // Add Total = Quantity * Price Per Unit
+          const total = (parseFloat(row["Quantity"]) || 0) * (parseFloat(row["Price Per Unit"]) || 0);
+          const totalTd = document.createElement("td");
+          totalTd.textContent = total.toFixed(2);
+          tr.appendChild(totalTd);
+
           tbody.appendChild(tr);
+
+          totalQuantity += parseFloat(row["Quantity"]) || 0;
+          totalAmount += total;
         });
+
+        // Footer with totals
+        const totalRow = document.createElement("tr");
+        keys.forEach((key) => {
+          const td = document.createElement("td");
+          if (key === "Quantity") {
+            td.textContent = totalQuantity.toFixed(2);
+          } else if (key === "Price Per Unit") {
+            td.textContent = "";
+          } else {
+            td.textContent = "";
+          }
+          totalRow.appendChild(td);
+        });
+        // Total footer cell for "Total" column
+        const totalFooterTd = document.createElement("td");
+        totalFooterTd.textContent = totalAmount.toFixed(2);
+        totalRow.appendChild(totalFooterTd);
+
+        tfoot.appendChild(totalRow);
       }
 
       function applyFilters() {
-        const searchText = document
-          .getElementById("searchText")
-          .value.toLowerCase();
+        const searchText = document.getElementById("searchText").value.toLowerCase();
         const startDate = document.getElementById("startDate").value;
         const endDate = document.getElementById("endDate").value;
         const category = document.getElementById("categoryFilter").value;
+        const paymentMethod = document.getElementById("paymentMethodFilter").value;
 
-        const filtered = fullData.filter((tx) => {
+        filteredData = fullData.filter((tx) => {
           const date = tx.Date || "";
           const item = tx["Item Name"]?.toLowerCase() || "";
           const vendor = tx["Vendor"]?.toLowerCase() || "";
           const cat = tx["Category"]?.toLowerCase() || "";
+          const payMethod = tx["Payment Method"]?.toLowerCase() || "";
 
           const matchesSearch =
             item.includes(searchText) ||
             vendor.includes(searchText) ||
             cat.includes(searchText);
+
           const matchesCategory = !category || tx["Category"] === category;
+          const matchesPaymentMethod = !paymentMethod || tx["Payment Method"] === paymentMethod;
           const matchesStart = !startDate || date >= startDate;
           const matchesEnd = !endDate || date <= endDate;
 
-          return matchesSearch && matchesCategory && matchesStart && matchesEnd;
+          return matchesSearch && matchesCategory && matchesPaymentMethod && matchesStart && matchesEnd;
         });
 
-        displayTable(filtered);
-        updateCharts(filtered);
+        displayTable(filteredData);
+        updateCharts(filteredData);
       }
 
       function resetFilters() {
@@ -196,6 +245,8 @@
         document.getElementById("startDate").value = "";
         document.getElementById("endDate").value = "";
         document.getElementById("categoryFilter").value = "";
+        document.getElementById("paymentMethodFilter").value = "";
+        filteredData = fullData;
         displayTable(fullData);
         updateCharts(fullData);
       }
@@ -205,124 +256,219 @@
         const categories = [...new Set(data.map((tx) => tx.Category))];
         select.innerHTML = '<option value="">All Categories</option>';
         categories.forEach((cat) => {
-          const option = document.createElement("option");
-          option.value = cat;
-          option.textContent = cat;
-          select.appendChild(option);
+          if (cat) {
+            const option = document.createElement("option");
+            option.value = cat;
+            option.textContent = cat;
+            select.appendChild(option);
+          }
+        });
+      }
+
+      function populatePaymentMethodFilter(data) {
+        const select = document.getElementById("paymentMethodFilter");
+        const methods = [...new Set(data.map((tx) => tx["Payment Method"]))];
+        select.innerHTML = '<option value="">All Payment Methods</option>';
+        methods.forEach((method) => {
+          if (method) {
+            const option = document.createElement("option");
+            option.value = method;
+            option.textContent = method;
+            select.appendChild(option);
+          }
         });
       }
 
       let categoryChart, timeChart;
 
       function updateCharts(data) {
+        // Group by category for spending
         const categoryTotals = {};
         data.forEach((tx) => {
-          const cat = tx.Category;
-          const total =
-            (parseFloat(tx["Quantity"]) || 0) *
-            (parseFloat(tx["Price Per Unit"]) || 0);
+          const cat = tx.Category || "Uncategorized";
+          const total = (parseFloat(tx["Quantity"]) || 0) * (parseFloat(tx["Price Per Unit"]) || 0);
           categoryTotals[cat] = (categoryTotals[cat] || 0) + total;
         });
 
-        const catLabels = Object.keys(categoryTotals);
-        const catValues = Object.values(categoryTotals);
+        // Prepare data for category chart
+        const categoryLabels = Object.keys(categoryTotals);
+        const categoryData = categoryLabels.map((cat) => categoryTotals[cat]);
 
         if (categoryChart) categoryChart.destroy();
-        categoryChart = new Chart(document.getElementById("categoryChart"), {
-          type: "bar",
+        const ctxCategory = document.getElementById("categoryChart").getContext("2d");
+        categoryChart = new Chart(ctxCategory, {
+          type: "pie",
           data: {
-            labels: catLabels,
-            datasets: [
-              {
-                label: "Total Spending",
-                data: catValues,
-                backgroundColor: "rgba(75, 192, 192, 0.6)",
+            labels: categoryLabels,
+            datasets: [{
+              data: categoryData,
+              backgroundColor: categoryLabels.map(() => getRandomColor()),
+            }],
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { position: "bottom" },
+              title: {
+                display: true,
+                text: "Spending by Category",
               },
-            ],
+            },
           },
         });
 
-        const dateTotals = {};
+        // Group spending over time (monthly)
+        const monthlyTotals = {};
         data.forEach((tx) => {
-          const date = tx.Date;
-          const total =
-            (parseFloat(tx["Quantity"]) || 0) *
-            (parseFloat(tx["Price Per Unit"]) || 0);
-          dateTotals[date] = (dateTotals[date] || 0) + total;
+          let date = tx.Date;
+          if (!date) return;
+          const ym = date.slice(0, 7); // "YYYY-MM"
+          const total = (parseFloat(tx["Quantity"]) || 0) * (parseFloat(tx["Price Per Unit"]) || 0);
+          monthlyTotals[ym] = (monthlyTotals[ym] || 0) + total;
         });
 
-        const sortedDates = Object.keys(dateTotals).sort();
-        const dateValues = sortedDates.map((date) => dateTotals[date]);
+        const timeLabels = Object.keys(monthlyTotals).sort();
+        const timeData = timeLabels.map((m) => monthlyTotals[m]);
 
         if (timeChart) timeChart.destroy();
-        timeChart = new Chart(document.getElementById("timeChart"), {
+        const ctxTime = document.getElementById("timeChart").getContext("2d");
+        timeChart = new Chart(ctxTime, {
           type: "line",
           data: {
-            labels: sortedDates,
-            datasets: [
-              {
-                label: "Spending Over Time",
-                data: dateValues,
-                borderColor: "rgba(153, 102, 255, 0.8)",
-                fill: false,
-                tension: 0.2,
-              },
-            ],
+            labels: timeLabels,
+            datasets: [{
+              label: "Total Spending",
+              data: timeData,
+              fill: false,
+              borderColor: "blue",
+              tension: 0.1,
+            }],
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { display: true },
+              title: { display: true, text: "Spending Over Time (Monthly)" },
+            },
+            scales: {
+              x: { title: { display: true, text: "Month" } },
+              y: { title: { display: true, text: "Amount ($)" }, beginAtZero: true },
+            },
           },
         });
       }
 
+      function getRandomColor() {
+        const r = Math.floor(150 + Math.random() * 105);
+        const g = Math.floor(150 + Math.random() * 105);
+        const b = Math.floor(150 + Math.random() * 105);
+        return `rgb(${r},${g},${b})`;
+      }
+
+      // Export CSV
       function exportToCSV() {
-        const rows = document.querySelectorAll("#transactionTable tr");
-        if (rows.length === 0) return;
+        const dataToExport = document.getElementById("exportFiltered").checked ? filteredData : fullData;
+        if (!dataToExport.length) {
+          alert("No data to export!");
+          return;
+        }
 
-        let csvContent = "";
-        rows.forEach((row) => {
-          const cols = row.querySelectorAll("td, th");
-          const line = Array.from(cols)
-            .map((td) => `"${td.textContent}"`)
-            .join(",");
-          csvContent += line + "\n";
-        });
+        const keys = Object.keys(dataToExport[0]);
+        const rows = dataToExport.map((row) =>
+          keys.map((k) => `"${(row[k] ?? "").toString().replace(/"/g, '""')}"`).join(",")
+        );
 
-        const blob = new Blob([csvContent], { type: "text/csv" });
+        const csvContent = [keys.join(","), ...rows].join("\r\n");
+
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
         const url = URL.createObjectURL(blob);
 
         const a = document.createElement("a");
         a.href = url;
-        a.download = "transactions.csv";
+        a.download = "finance_data.csv";
         a.click();
         URL.revokeObjectURL(url);
       }
 
-      function exportToPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+      // Export Excel
+      function exportToExcel() {
+        const dataToExport = document.getElementById("exportFiltered").checked ? filteredData : fullData;
+        if (!dataToExport.length) {
+          alert("No data to export!");
+          return;
+        }
 
-        const table = document.getElementById("transactionTable");
-        const rows = table.querySelectorAll("tr");
+        const ws = XLSX.utils.json_to_sheet(dataToExport);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "FinanceData");
 
-        if (rows.length === 0) return;
-
-        const headers = Array.from(rows[0].querySelectorAll("th")).map(
-          (th) => th.textContent
-        );
-        const data = Array.from(rows)
-          .slice(1)
-          .map((tr) =>
-            Array.from(tr.querySelectorAll("td")).map((td) => td.textContent)
-          );
-
-        doc.text("Finance Transactions", 14, 14);
-        doc.autoTable({
-          startY: 20,
-          head: [headers],
-          body: data,
-        });
-
-        doc.save("transactions.pdf");
+        XLSX.writeFile(wb, "finance_data.xlsx");
       }
 
+      // Export PDF with charts and table
+      async function exportToPDF() {
+        const dataToExport = document.getElementById("exportFiltered").checked ? filteredData : fullData;
+        if (!dataToExport.length) {
+          alert("No data to export!");
+          return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF("p", "pt", "a4");
+        const pageWidth = doc.internal.pageSize.getWidth();
+
+        doc.setFontSize(18);
+        doc.text("Finance Tracker Report", pageWidth / 2, 40, { align: "center" });
+
+        // Add charts
+        // We will convert canvas to image and embed
+
+        const addChartImage = (canvasId, yPosition, title) => {
+          const canvas = document.getElementById(canvasId);
+          const imgData = canvas.toDataURL("image/png");
+          doc.setFontSize(14);
+          doc.text(title, 40, yPosition - 10);
+          doc.addImage(imgData, "PNG", 40, yPosition, pageWidth - 80, 150);
+          return yPosition + 160;
+        };
+
+        let y = 60;
+        y = addChartImage("categoryChart", y, "Spending by Category");
+        y = addChartImage("timeChart", y, "Spending Over Time");
+
+        // Add table (only key columns and total)
+        const keys = Object.keys(dataToExport[0]);
+        const headers = [...keys, "Total"];
+
+        // Prepare body rows
+        const body = dataToExport.map((row) => {
+          const total = (parseFloat(row["Quantity"]) || 0) * (parseFloat(row["Price Per Unit"]) || 0);
+          return [...keys.map((k) => row[k] ?? ""), total.toFixed(2)];
+        });
+
+        // AutoTable
+        doc.autoTable({
+          head: [headers],
+          body,
+          startY: y + 20,
+          styles: { fontSize: 8 },
+          headStyles: { fillColor: [220, 220, 220] },
+          theme: "striped",
+          margin: { left: 20, right: 20 },
+          didDrawPage: (data) => {
+            if (data.pageNumber > 1) {
+              doc.setFontSize(10);
+              doc.text(`Page ${data.pageNumber}`, pageWidth / 2, doc.internal.pageSize.getHeight() - 10, {
+                align: "center",
+              });
+            }
+          },
+        });
+
+        doc.save("finance_report.pdf");
+      }
+
+      // Load data on page load
       loadTransactions();
     </script>
   </body>
