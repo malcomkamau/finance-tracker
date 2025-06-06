@@ -283,9 +283,10 @@ function renderCharts(transactions) {
   // Example: Pie chart for category distribution, Bar chart for monthly expenses
 
   // Clear old charts if any
-  if (window.categoryChart) {
-    window.categoryChart.destroy();
-  }
+  if (window.categoryChart && typeof window.categoryChart.destroy === 'function') {
+  window.categoryChart.destroy();
+}
+
   if (window.monthlyChart) {
     window.monthlyChart.destroy();
   }
