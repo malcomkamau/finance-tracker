@@ -76,7 +76,6 @@
       <input type="date" id="endDate" />
       <select id="categoryFilter">
         <option value="">All Categories</option>
-        <!-- Dynamically filled -->
       </select>
       <button onclick="applyFilters()">Apply Filters</button>
       <button onclick="resetFilters()">Reset</button>
@@ -101,7 +100,6 @@
     <script>
       const BASE_URL = "https://finance-tracker-97jz.onrender.com";
 
-      // Submit form
       document
         .getElementById("transactionForm")
         .addEventListener("submit", async (e) => {
@@ -112,7 +110,6 @@
           data["Price Per Unit"] = parseFloat(data["Price Per Unit"]);
 
           await fetch(`${BASE_URL}/api/submit`, {
-            // <-- POST via local server
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),
@@ -122,18 +119,16 @@
           loadTransactions();
         });
 
-      // Load transactions into table
-      let fullData = []; // Global data
+      let fullData = [];
 
       async function loadTransactions() {
         try {
           const res = await fetch(`${BASE_URL}/api/data`);
           const data = await res.json();
 
-          fullData = data; // Save full data for filtering
-
+          fullData = data;
           populateCategoryFilter(data);
-          displayTable(data); // Show all by default
+          displayTable(data);
           updateCharts(data);
         } catch (err) {
           console.error("Failed to fetch data:", err);
@@ -185,7 +180,6 @@
             item.includes(searchText) ||
             vendor.includes(searchText) ||
             cat.includes(searchText);
-
           const matchesCategory = !category || tx["Category"] === category;
           const matchesStart = !startDate || date >= startDate;
           const matchesEnd = !endDate || date <= endDate;
@@ -203,6 +197,7 @@
         document.getElementById("endDate").value = "";
         document.getElementById("categoryFilter").value = "";
         displayTable(fullData);
+        updateCharts(fullData);
       }
 
       function populateCategoryFilter(data) {
@@ -220,7 +215,6 @@
       let categoryChart, timeChart;
 
       function updateCharts(data) {
-        // --- Group by category ---
         const categoryTotals = {};
         data.forEach((tx) => {
           const cat = tx.Category;
@@ -230,61 +224,9 @@
           categoryTotals[cat] = (categoryTotals[cat] || 0) + total;
         });
 
-        function exportToCSV() {
-          const rows = document.querySelectorAll("#transactionTable tr");
-          if (rows.length === 0) return;
-
-          let csvContent = "";
-          rows.forEach((row) => {
-            const cols = row.querySelectorAll("td, th");
-            const line = Array.from(cols)
-              .map((td) => `"${td.textContent}"`)
-              .join(",");
-            csvContent += line + "\n";
-          });
-
-          const blob = new Blob([csvContent], { type: "text/csv" });
-          const url = URL.createObjectURL(blob);
-
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "transactions.csv";
-          a.click();
-          URL.revokeObjectURL(url);
-        }
-
-        async function exportToPDF() {
-          const { jsPDF } = window.jspdf;
-          const doc = new jsPDF();
-
-          const table = document.getElementById("transactionTable");
-          const rows = table.querySelectorAll("tr");
-
-          if (rows.length === 0) return;
-
-          const headers = Array.from(rows[0].querySelectorAll("th")).map(
-            (th) => th.textContent
-          );
-          const data = Array.from(rows)
-            .slice(1)
-            .map((tr) =>
-              Array.from(tr.querySelectorAll("td")).map((td) => td.textContent)
-            );
-
-          doc.text("Finance Transactions", 14, 14);
-          doc.autoTable({
-            startY: 20,
-            head: [headers],
-            body: data,
-          });
-
-          doc.save("transactions.pdf");
-        }
-
         const catLabels = Object.keys(categoryTotals);
         const catValues = Object.values(categoryTotals);
 
-        // Destroy previous chart if exists
         if (categoryChart) categoryChart.destroy();
         categoryChart = new Chart(document.getElementById("categoryChart"), {
           type: "bar",
@@ -300,7 +242,6 @@
           },
         });
 
-        // --- Group by date ---
         const dateTotals = {};
         data.forEach((tx) => {
           const date = tx.Date;
@@ -331,7 +272,58 @@
         });
       }
 
-      loadTransactions(); // Initial load
+      function exportToCSV() {
+        const rows = document.querySelectorAll("#transactionTable tr");
+        if (rows.length === 0) return;
+
+        let csvContent = "";
+        rows.forEach((row) => {
+          const cols = row.querySelectorAll("td, th");
+          const line = Array.from(cols)
+            .map((td) => `"${td.textContent}"`)
+            .join(",");
+          csvContent += line + "\n";
+        });
+
+        const blob = new Blob([csvContent], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "transactions.csv";
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function exportToPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        const table = document.getElementById("transactionTable");
+        const rows = table.querySelectorAll("tr");
+
+        if (rows.length === 0) return;
+
+        const headers = Array.from(rows[0].querySelectorAll("th")).map(
+          (th) => th.textContent
+        );
+        const data = Array.from(rows)
+          .slice(1)
+          .map((tr) =>
+            Array.from(tr.querySelectorAll("td")).map((td) => td.textContent)
+          );
+
+        doc.text("Finance Transactions", 14, 14);
+        doc.autoTable({
+          startY: 20,
+          head: [headers],
+          body: data,
+        });
+
+        doc.save("transactions.pdf");
+      }
+
+      loadTransactions();
     </script>
   </body>
 </html>
