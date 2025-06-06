@@ -19,7 +19,7 @@
       <div
         class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center"
       >
-        <h1 class="text-2xl font-bold tracking-wide">Harvion Technologies</h1>
+        <h1 class="text-2xl text-white font-bold tracking-wide">Harvion Technologies</h1>
         <!-- Placeholder for future logo or nav -->
         <!-- <img src="/logo.png" alt="Logo" class="h-8"> -->
       </div>
@@ -81,6 +81,20 @@
                 0.00
               </p>
             </div>
+          </div>
+        </div>
+        <div class="charts">
+          <div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-3">
+              Dashboard Category Chart
+            </h3>
+            <canvas id="dashboardCategoryChart"></canvas>
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-3">
+              Dashboard Time Chart
+            </h3>
+            <canvas id="dashboardTimeChart"></canvas>
           </div>
         </div>
       </div>
@@ -281,35 +295,68 @@
   </form> -->
 
     <section class="table-section px-4 sm:px-8 lg:px-16 py-6">
-  <h2 class="text-2xl font-bold text-green-900 mb-4">Transaction Records</h2>
-  <div class="overflow-x-auto rounded-lg shadow ring-1 ring-black/5">
-    <table id="transactionTable" class="min-w-full bg-white text-sm text-left">
-      <thead class="bg-green-100 text-green-900 font-semibold">
-        <tr>
-          <th class="px-4 py-3">Date</th>
-          <th class="px-4 py-3">Item Name</th>
-          <th class="px-4 py-3">Category</th>
-          <th class="px-4 py-3">Quantity</th>
-          <th class="px-4 py-3">Price Per Unit</th>
-          <th class="px-4 py-3">Vendor</th>
-          <th class="px-4 py-3">Payment Method</th>
-          <th class="px-4 py-3">Notes</th>
-          <th class="px-4 py-3">Total (Kes)</th>
-          <th class="px-4 py-3">Actions</th>
-        </tr>
-      </thead>
-      <tbody id="tableBody" class="divide-y divide-gray-200">
-        <!-- Rows will be injected dynamically via JS -->
-      </tbody>
-      <tfoot class="bg-green-50 font-medium text-green-800">
-        <tr>
-          <td colspan="8" class="px-4 py-3 text-right">Total</td>
-          <td id="totalRow" class="px-4 py-3">0.00</td>
-        </tr>
-      </tfoot>
-    </table>
+      <h2 class="text-2xl font-bold text-green-900 mb-4">
+        Transaction Records
+      </h2>
+      <div class="overflow-x-auto rounded-lg shadow ring-1 ring-black/5">
+        <table
+          id="transactionTable"
+          class="min-w-full bg-white text-sm text-left"
+        >
+          <thead class="bg-green-100 text-green-900 font-semibold">
+            <tr>
+              <th class="px-4 py-3">Date</th>
+              <th class="px-4 py-3">Item Name</th>
+              <th class="px-4 py-3">Category</th>
+              <th class="px-4 py-3">Quantity</th>
+              <th class="px-4 py-3">Price Per Unit</th>
+              <th class="px-4 py-3">Vendor</th>
+              <th class="px-4 py-3">Payment Method</th>
+              <th class="px-4 py-3">Notes</th>
+              <th class="px-4 py-3">Total (Kes)</th>
+              <th class="px-4 py-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody" class="divide-y divide-gray-200">
+            <!-- Rows will be injected dynamically via JS -->
+          </tbody>
+          <tfoot class="bg-green-50 font-medium text-green-800">
+            <tr>
+              <td colspan="8" class="px-4 py-3 text-right">Total</td>
+              <td id="totalRow" class="px-4 py-3">0.00</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- Edit Modal -->
+<div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+  <div class="bg-white p-6 rounded shadow-md w-full max-w-md relative">
+    <button
+      class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+      onclick="closeEditModal()"
+    >✕</button>
+    <h2 class="text-xl font-semibold mb-4">Edit Transaction</h2>
+    <form id="editForm" onsubmit="submitEdit(event)">
+      <input type="hidden" id="editIndex" />
+      <input type="text" id="editDescription" placeholder="Description" class="border p-2 w-full mb-2" required />
+      <input type="number" id="editAmount" placeholder="Amount" class="border p-2 w-full mb-2" required />
+      <input type="date" id="editDate" class="border p-2 w-full mb-2" required />
+      <input type="text" id="editCategory" placeholder="Category" class="border p-2 w-full mb-2" required />
+      <select id="editPaymentMethod" class="border p-2 w-full mb-2" required>
+        <option value="">Select Payment Method</option>
+        <option value="Cash">Cash</option>
+        <option value="Credit Card">Credit Card</option>
+        <option value="Bank Transfer">Bank Transfer</option>
+      </select>
+      <div class="flex justify-end">
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
+      </div>
+    </form>
   </div>
-</section>
+</div>
+
 
     <div class="charts">
       <div>
@@ -319,18 +366,6 @@
       <div>
         <h3 class="text-xl font-semibold text-gray-700 mb-3">Time Chart</h3>
         <canvas id="timeChart"></canvas>
-      </div>
-      <div>
-        <h3 class="text-xl font-semibold text-gray-700 mb-3">
-          Dashboard Category Chart
-        </h3>
-        <canvas id="dashboardCategoryChart"></canvas>
-      </div>
-      <div>
-        <h3 class="text-xl font-semibold text-gray-700 mb-3">
-          Dashboard Time Chart
-        </h3>
-        <canvas id="dashboardTimeChart"></canvas>
       </div>
     </div>
 

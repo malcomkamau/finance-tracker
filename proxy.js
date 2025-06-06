@@ -27,6 +27,51 @@ app.post('/api/submit', async (req, res) => {
   }
 });
 
+app.put('/api/transaction/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const payload = {
+      ...req.body,
+      action: "edit",
+      id
+    };
+
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+    res.json(result);
+  } catch (err) {
+    console.error('Edit Error:', err);
+    res.status(500).json({ success: false, message: 'Error editing data' });
+  }
+});
+
+app.delete('/api/transaction/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const payload = {
+      action: "delete",
+      id
+    };
+
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+    res.json(result);
+  } catch (err) {
+    console.error('Delete Error:', err);
+    res.status(500).json({ success: false, message: 'Error deleting data' });
+  }
+});
+
 app.get('/api/data', async (req, res) => {
   try {
     const response = await fetch(SCRIPT_URL);
