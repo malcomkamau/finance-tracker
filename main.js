@@ -144,7 +144,6 @@ function renderTransactionsTable(transactions) {
         return;
     }
 
-    // Updated header to include Actions column
     thead.innerHTML = `
     <tr class="bg-green-100 text-green-900 font-semibold">
       <th class="px-4 py-3">Date</th>
@@ -160,72 +159,115 @@ function renderTransactionsTable(transactions) {
     </tr>
   `;
 
-    tbody.innerHTML = transactions.map(t => `
-    <tr class="border-b border-green-200">
-      <td class="px-4 py-3">${formatDate(t.Date)}</td>
-      <td class="px-4 py-3">${t["Item Name"] || ""}</td>
-      <td class="px-4 py-3">${t.Category || ""}</td>
-      <td class="px-4 py-3">${t.Quantity}</td>
-      <td class="px-4 py-3">Kes ${t["Price Per Unit"].toFixed(2)}</td>
-      <td class="px-4 py-3">${t.Vendor || ""}</td>
-      <td class="px-4 py-3">${t["Payment Method"] || ""}</td>
-      <td class="px-4 py-3">${t.Notes || ""}</td>
-      <td class="px-4 py-3">${(t.Quantity * t["Price Per Unit"]).toFixed(2)}</td>
-      <td class="px-4 py-3 flex space-x-2">
-        <button
-          class="edit-btn bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm"
-          data-id="${t.id}" title="Edit"
-        >Edit</button>
-        <button
-          class="delete-btn bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm"
-          data-id="${t.id}" title="Delete"
-        >Delete</button>
-      </td>
-    </tr>
-  `).join("");
+    tbody.innerHTML = transactions.map(t => {
+        const quantity = Number(t.Quantity) || 0;
+        const pricePerUnit = Number(t["Price Per Unit"]) || 0;
+        const total = quantity * pricePerUnit;
 
-    // Attach Edit/Delete button listeners after rendering table rows
-    tbody.querySelectorAll(".edit-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-            const id = btn.dataset.id;
-            const transaction = allTransactions.find(t => t.id == id);
-            if (transaction) {
-                // Fill the form for editing
-                const form = document.getElementById("transactionForm");
-                if (form) {
-                    for (const key in transaction) {
-                        if (form.elements[key]) {
-                            form.elements[key].value = transaction[key];
-                        }
+        return `
+      <tr class="border-b border-green-200">
+        <td class="px-4 py-3">${formatDate(t.Date)}</td>
+        <td class="px-4 py-3">${t["Item Name"] || ""}</td>
+        <td class="px-4 py-3">${t.Category || ""}</td>
+        <td class="px-4 py-3">${quantity}</td>
+        <td class="px-4 py-3">Kes ${pricePerUnit.toFixed(2)}</td>
+        <td class="px-4 py-3">${t.Vendor || ""}</td>
+        <td class="px-4 py-3">${t["Payment Method"] || ""}</td>
+        <td class="px-4 py-3">${t.Notes || ""}</td>
+        <td class="px-4 py-3">${total.toFixed(2)}</td>
+        <td class="px-4 py-3 flex space-x-2">
+          <button
+            class="edit-btn bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm"
+            data-id="${t.id}" title="Edit"
+          >Edit</button>
+          <button
+            class="delete-btn bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm"
+            data-id="${t.id}" title="Delete"
+          >Delete</button>
+        </td>
+      </tr>
+    `;
+    }).join("");
+
+    // Attach event listeners after rendering
+    document.querySelectorAll(".edit-btn").forEach(btn => {
+        btn.onclick = e => {
+            const id = e.currentTarget.getAttribute("data-id");
+            handleEditTransaction(id);
+        };
+    });
+
+    document.querySelectorAll(".delete-btn").forEach(btn => {
+        btn.onclick = e => {
+            const id = e.currentTarget.getAttribute("data-id");
+            handleDeleteTransaction(id);
+        };
+    });
+}
+
+// Helper functions (add these below or in your JS file)
+function handleEditTransaction(id) {
+    const transaction = transactions.find(t => String(t.id) === String(id));
+    if (!transaction) {
+        alert("Transaction not found");
+        return;
+    }
+    const newName = prompt("Edit Item Name:", transaction["Item Name"]);
+    if (newName !== null) {
+        transaction["Item Name"] = newName.trim();
+        renderTransactionsTable(transactions);
+    }
+}
+
+function handleDeleteTransaction(id) {
+    if (!confirm("Are you sure you want to delete this transaction?")) return;
+    transactions = transactions.filter(t => String(t.id) !== String(id));
+    renderTransactionsTable(transactions);
+}
+
+
+// Attach Edit/Delete button listeners after rendering table rows
+tbody.querySelectorAll(".edit-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const id = btn.dataset.id;
+        const transaction = allTransactions.find(t => t.id == id);
+        if (transaction) {
+            // Fill the form for editing
+            const form = document.getElementById("transactionForm");
+            if (form) {
+                for (const key in transaction) {
+                    if (form.elements[key]) {
+                        form.elements[key].value = transaction[key];
                     }
-                    form.dataset.editingId = id; // mark as editing
                 }
+                form.dataset.editingId = id; // mark as editing
             }
-        });
+        }
     });
+});
 
-    tbody.querySelectorAll(".delete-btn").forEach(btn => {
-        btn.addEventListener("click", async () => {
-            const id = btn.dataset.id;
-            if (confirm("Are you sure you want to delete this transaction?")) {
-                try {
-                    const res = await fetch(`${BASE_URL}/api/transaction/${id}`, { method: "DELETE" });
-                    if (!res.ok) throw new Error("Failed to delete");
-                    await loadTransactions();
-                    alert("Transaction deleted successfully");
-                } catch (err) {
-                    console.error(err);
-                    alert("Error deleting transaction");
-                }
+tbody.querySelectorAll(".delete-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+        const id = btn.dataset.id;
+        if (confirm("Are you sure you want to delete this transaction?")) {
+            try {
+                const res = await fetch(`${BASE_URL}/api/transaction/${id}`, { method: "DELETE" });
+                if (!res.ok) throw new Error("Failed to delete");
+                await loadTransactions();
+                alert("Transaction deleted successfully");
+            } catch (err) {
+                console.error(err);
+                alert("Error deleting transaction");
             }
-        });
+        }
     });
+});
 
-    // Update totals footer
-    const totalQuantity = transactions.reduce((acc, t) => acc + (t.Quantity || 0), 0);
-    const totalAmount = transactions.reduce((acc, t) => acc + ((t.Quantity || 0) * (t["Price Per Unit"] || 0)), 0);
+// Update totals footer
+const totalQuantity = transactions.reduce((acc, t) => acc + (t.Quantity || 0), 0);
+const totalAmount = transactions.reduce((acc, t) => acc + ((t.Quantity || 0) * (t["Price Per Unit"] || 0)), 0);
 
-    tfoot.innerHTML = `
+tfoot.innerHTML = `
       <tr class="bg-green-100 font-semibold">
         <td colspan="3" class="px-4 py-3 text-right">Totals:</td>
         <td class="px-4 py-3">${totalQuantity}</td>
@@ -235,7 +277,7 @@ function renderTransactionsTable(transactions) {
         <td></td>
       </tr>
     `;
-}
+
 
 function formatDate(dateString) {
     if (!dateString) return "";
