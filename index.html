@@ -6,6 +6,8 @@
   <title>Finance Tracker</title>
   <link rel="stylesheet" href="style.css"> <!-- Link your CSS file here -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.css"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+
 </head>
 <body>
 <!-- Header -->
@@ -38,7 +40,7 @@
   </section>
 
   <!-- Form Section -->
-   <section class="form-section">
+   <!-- <section class="form-section">
       <h2>Add New Transaction</h2>
       <form id="transactionForm" class="transaction-form">
 
@@ -84,7 +86,57 @@
 
         <button type="submit" class="submit-btn">Add Transaction</button>
       </form>
-   </section>
+   </section> -->
+
+   <section class="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto mt-6">
+  <h2 class="text-2xl font-bold text-gray-800 mb-4">Add New Transaction</h2>
+  <form id="transactionForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+      <input type="date" name="Date" id="date" required class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+
+    <div>
+      <label for="itemName" class="block text-sm font-medium text-gray-700">Item Name</label>
+      <input type="text" name="Item Name" id="itemName" required placeholder="e.g. Cement" class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+
+    <div>
+      <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+      <input type="text" name="Category" id="category" required placeholder="e.g. Materials" class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+
+    <div>
+      <label for="qty" class="block text-sm font-medium text-gray-700">Quantity</label>
+      <input type="number" name="Quantity" id="qty" required step="1" placeholder="e.g. 10" class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+
+    <div>
+      <label for="ppu" class="block text-sm font-medium text-gray-700">Price Per Unit</label>
+      <input type="number" name="Price Per Unit" id="ppu" required step="1" placeholder="e.g. 300" class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+
+    <div>
+      <label for="vendor" class="block text-sm font-medium text-gray-700">Vendor</label>
+      <input type="text" name="Vendor" id="vendor" placeholder="Optional" class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+
+    <div>
+      <label for="pm" class="block text-sm font-medium text-gray-700">Payment Method</label>
+      <input type="text" name="Payment Method" id="pm" placeholder="e.g. Cash, M-PESA" class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+
+    <div>
+      <label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
+      <input type="text" name="Notes" id="notes" placeholder="Additional info" class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+
+    <div class="md:col-span-2">
+      <button type="submit" class="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition">Add Transaction</button>
+    </div>
+  </form>
+</section>
+
 
   <!-- <form id="transactionForm">
     <h2>Add Transaction</h2>

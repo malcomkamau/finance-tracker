@@ -160,7 +160,7 @@ function renderTransactionsTable(transactions) {
       <td>${t["Item Name"] || ""}</td>
       <td>${t.Category || ""}</td>
       <td>${t.Quantity}</td>
-      <td>$${t["Price Per Unit"].toFixed(2)}</td>
+      <td>Kes ${t["Price Per Unit"].toFixed(2)}</td>
       <td>${t.Vendor || ""}</td>
       <td>${t["Payment Method"] || ""}</td>
       <td>${t.Notes || ""}</td>
@@ -173,7 +173,7 @@ function renderTransactionsTable(transactions) {
     <tr>
       <td colspan="3"><strong>Totals</strong></td>
       <td><strong>${totalQuantity}</strong></td>
-      <td><strong>$${totalSpending.toFixed(2)}</strong></td>
+      <td><strong>Kes ${totalSpending.toFixed(2)}</strong></td>
       <td colspan="3"></td>
     </tr>
   `;
