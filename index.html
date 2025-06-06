@@ -18,22 +18,20 @@
     </div>
   </header>
 
-  <h1>Finance Tracker</h1>
-
   <!-- Dashboard -->
   <section class="dashboard">
-    <h2>Dashboard Summary</h2>
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Dashboard Summary</h2>
     <div class="summary-cards">
       <div class="card">
-        <span>Total Transactions</span>
+        <span class="text-xl font-semibold text-gray-700 mb-3">Total Transactions</span>
         <p id="totalTransactions">0</p>
       </div>
       <div class="card">
-        <span>Total Quantity</span>
+        <span class="text-xl font-semibold text-gray-700 mb-3">Total Quantity</span>
         <p id="totalQuantity">0</p>
       </div>
       <div class="card">
-        <span>Total Spending (Kes)</span>
+        <span class="text-xl font-semibold text-gray-700 mb-3">Total Spending (Kes)</span>
         <p id="totalSpending">0.00</p>
       </div>
     </div>
@@ -160,7 +158,7 @@
   </form> -->
 
   <div class="filters">
-    <h2>Filters</h2>
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Filters</h2>
     <input id="searchText" type="text" placeholder="Search..." />
     <input id="startDate" type="date" />
     <input id="endDate" type="date" />
@@ -183,7 +181,7 @@
   </table>
 
   <div>
-    <h2>Export Options</h2>
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Export Options</h2>
     <label><input type="checkbox" id="exportFiltered" /> Export Filtered Data Only</label><br />
     <button id="exportCSV">Export CSV</button>
     <button id="exportExcel">Export Excel</button>
@@ -192,19 +190,19 @@
 
   <div class="charts">
     <div>
-      <h3>Category Chart</h3>
+      <h3 class="text-xl font-semibold text-gray-700 mb-3">Category Chart</h3>
       <canvas id="categoryChart"></canvas>
     </div>
     <div>
-      <h3>Time Chart</h3>
+      <h3 class="text-xl font-semibold text-gray-700 mb-3">Time Chart</h3>
       <canvas id="timeChart"></canvas>
     </div>
     <div>
-      <h3>Dashboard Category Chart</h3>
+      <h3 class="text-xl font-semibold text-gray-700 mb-3">Dashboard Category Chart</h3>
       <canvas id="dashboardCategoryChart"></canvas>
     </div>
     <div>
-      <h3>Dashboard Time Chart</h3>
+      <h3 class="text-xl font-semibold text-gray-700 mb-3">Dashboard Time Chart</h3>
       <canvas id="dashboardTimeChart"></canvas>
     </div>
   </div>
