@@ -107,6 +107,36 @@ async function loadTransactions() {
     }
 }
 
+function updateFiltersOptions() {
+    const categorySet = new Set();
+    const paymentSet = new Set();
+
+    allTransactions.forEach(t => {
+        if (t.Category) categorySet.add(t.Category);
+        if (t["Payment Method"]) paymentSet.add(t["Payment Method"]);
+    });
+
+    populateSelect("categoryFilter", categorySet);
+    populateSelect("paymentMethodFilter", paymentSet);
+}
+
+function populateSelect(selectId, valueSet) {
+    const select = document.getElementById(selectId);
+    if (!select) return;
+
+    select.innerHTML = '<option value="">All</option>'; // reset with default
+
+    Array.from(valueSet)
+        .sort()
+        .forEach(val => {
+            const option = document.createElement("option");
+            option.value = val;
+            option.textContent = val;
+            select.appendChild(option);
+        });
+}
+
+
 
 function updateFiltersOptions() {
     const categories = Array.from(new Set(allTransactions.map(t => t.Category).filter(Boolean))).sort();
