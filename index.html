@@ -23,6 +23,8 @@
       }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
   </head>
   <body>
     <h2>Add Transaction</h2>
@@ -81,11 +83,14 @@
     </div>
 
     <h3>Spending by Category</h3>
-<canvas id="categoryChart" width="600" height="300"></canvas>
+    <canvas id="categoryChart" width="600" height="300"></canvas>
 
-<h3>Spending Over Time</h3>
-<canvas id="timeChart" width="600" height="300"></canvas>
+    <h3>Spending Over Time</h3>
+    <canvas id="timeChart" width="600" height="300"></canvas>
 
+    <h3>Export Options</h3>
+    <button onclick="exportToCSV()">Export CSV</button>
+    <button onclick="exportToPDF()">Export PDF</button>
 
     <h2>Transaction List</h2>
     <table id="transactionTable">
@@ -160,7 +165,6 @@
           });
           tbody.appendChild(tr);
         });
-
       }
 
       function applyFilters() {
@@ -188,7 +192,7 @@
 
           return matchesSearch && matchesCategory && matchesStart && matchesEnd;
         });
-        
+
         displayTable(filtered);
         updateCharts(filtered);
       }
@@ -215,63 +219,117 @@
 
       let categoryChart, timeChart;
 
-function updateCharts(data) {
-  // --- Group by category ---
-  const categoryTotals = {};
-  data.forEach((tx) => {
-    const cat = tx.Category;
-    const total = (parseFloat(tx["Quantity"]) || 0) * (parseFloat(tx["Price Per Unit"]) || 0);
-    categoryTotals[cat] = (categoryTotals[cat] || 0) + total;
-  });
+      function updateCharts(data) {
+        // --- Group by category ---
+        const categoryTotals = {};
+        data.forEach((tx) => {
+          const cat = tx.Category;
+          const total =
+            (parseFloat(tx["Quantity"]) || 0) *
+            (parseFloat(tx["Price Per Unit"]) || 0);
+          categoryTotals[cat] = (categoryTotals[cat] || 0) + total;
+        });
 
-  const catLabels = Object.keys(categoryTotals);
-  const catValues = Object.values(categoryTotals);
+        function exportToCSV() {
+          const rows = document.querySelectorAll("#transactionTable tr");
+          if (rows.length === 0) return;
 
-  // Destroy previous chart if exists
-  if (categoryChart) categoryChart.destroy();
-  categoryChart = new Chart(document.getElementById("categoryChart"), {
-    type: "bar",
-    data: {
-      labels: catLabels,
-      datasets: [
-        {
-          label: "Total Spending",
-          data: catValues,
-          backgroundColor: "rgba(75, 192, 192, 0.6)",
-        },
-      ],
-    },
-  });
+          let csvContent = "";
+          rows.forEach((row) => {
+            const cols = row.querySelectorAll("td, th");
+            const line = Array.from(cols)
+              .map((td) => `"${td.textContent}"`)
+              .join(",");
+            csvContent += line + "\n";
+          });
 
-  // --- Group by date ---
-  const dateTotals = {};
-  data.forEach((tx) => {
-    const date = tx.Date;
-    const total = (parseFloat(tx["Quantity"]) || 0) * (parseFloat(tx["Price Per Unit"]) || 0);
-    dateTotals[date] = (dateTotals[date] || 0) + total;
-  });
+          const blob = new Blob([csvContent], { type: "text/csv" });
+          const url = URL.createObjectURL(blob);
 
-  const sortedDates = Object.keys(dateTotals).sort();
-  const dateValues = sortedDates.map((date) => dateTotals[date]);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "transactions.csv";
+          a.click();
+          URL.revokeObjectURL(url);
+        }
 
-  if (timeChart) timeChart.destroy();
-  timeChart = new Chart(document.getElementById("timeChart"), {
-    type: "line",
-    data: {
-      labels: sortedDates,
-      datasets: [
-        {
-          label: "Spending Over Time",
-          data: dateValues,
-          borderColor: "rgba(153, 102, 255, 0.8)",
-          fill: false,
-          tension: 0.2,
-        },
-      ],
-    },
-  });
-}
+        async function exportToPDF() {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF();
 
+          const table = document.getElementById("transactionTable");
+          const rows = table.querySelectorAll("tr");
+
+          if (rows.length === 0) return;
+
+          const headers = Array.from(rows[0].querySelectorAll("th")).map(
+            (th) => th.textContent
+          );
+          const data = Array.from(rows)
+            .slice(1)
+            .map((tr) =>
+              Array.from(tr.querySelectorAll("td")).map((td) => td.textContent)
+            );
+
+          doc.text("Finance Transactions", 14, 14);
+          doc.autoTable({
+            startY: 20,
+            head: [headers],
+            body: data,
+          });
+
+          doc.save("transactions.pdf");
+        }
+
+        const catLabels = Object.keys(categoryTotals);
+        const catValues = Object.values(categoryTotals);
+
+        // Destroy previous chart if exists
+        if (categoryChart) categoryChart.destroy();
+        categoryChart = new Chart(document.getElementById("categoryChart"), {
+          type: "bar",
+          data: {
+            labels: catLabels,
+            datasets: [
+              {
+                label: "Total Spending",
+                data: catValues,
+                backgroundColor: "rgba(75, 192, 192, 0.6)",
+              },
+            ],
+          },
+        });
+
+        // --- Group by date ---
+        const dateTotals = {};
+        data.forEach((tx) => {
+          const date = tx.Date;
+          const total =
+            (parseFloat(tx["Quantity"]) || 0) *
+            (parseFloat(tx["Price Per Unit"]) || 0);
+          dateTotals[date] = (dateTotals[date] || 0) + total;
+        });
+
+        const sortedDates = Object.keys(dateTotals).sort();
+        const dateValues = sortedDates.map((date) => dateTotals[date]);
+
+        if (timeChart) timeChart.destroy();
+        timeChart = new Chart(document.getElementById("timeChart"), {
+          type: "line",
+          data: {
+            labels: sortedDates,
+            datasets: [
+              {
+                label: "Spending Over Time",
+                data: dateValues,
+                borderColor: "rgba(153, 102, 255, 0.8)",
+                fill: false,
+                tension: 0.2,
+              },
+            ],
+          },
+        });
+      }
 
       loadTransactions(); // Initial load
     </script>
