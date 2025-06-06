@@ -8,21 +8,104 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.css"/>
 </head>
 <body>
+<!-- Header -->
+  <header class="site-header">
+    <div class="container header-content">
+      <img src="logo.png" alt="Company Logo" class="logo" />
+      <h1 class="company-name">Finance Tracker</h1>
+    </div>
+  </header>
 
   <h1>Finance Tracker</h1>
 
-  <form id="transactionForm">
+  <!-- Dashboard -->
+  <section class="dashboard">
+    <h2>Dashboard Summary</h2>
+    <div class="summary-cards">
+      <div class="card">
+        <span>Total Transactions</span>
+        <p id="totalTransactions">0</p>
+      </div>
+      <div class="card">
+        <span>Total Quantity</span>
+        <p id="totalQuantity">0</p>
+      </div>
+      <div class="card">
+        <span>Total Spending (Kes)</span>
+        <p id="totalSpending">0.00</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Form Section -->
+   <section class="form-section">
+      <h2>Add New Transaction</h2>
+      <form id="transactionForm" class="transaction-form">
+
+        <div class="form-group">
+          <label for="date">Date:</label>
+          <input type="date" name="Date" id="date" required placeholder="Date">
+        </div>
+
+        <div class="form-group">
+          <label for="itemName">Item Name:</label>
+          <input type="text" name="Item Name" id="itemName" required placeholder="Item Name">
+        </div>
+
+        <div class="form-group">
+          <label for="category">Category:</label>
+          <input type="text" name="Category" id="category" required placeholder="Category">
+        </div>
+
+        <div class="form-group">
+          <label for="qty">Quantity</label>
+          <input type="number" name="Quantity" id="qty" required step="1" placeholder="Quantity">
+        </div>
+
+        <div class="form-group">
+          <label for="ppu">Item Name:</label>
+          <input type="number" name="Price Per Unit" id="ppu" required step="1" placeholder="Item Name">
+        </div>
+
+        <div class="form-group">
+          <label for="vendor">Vendor:</label>
+          <input type="text" name="Vendor" id="vendor" placeholder="Vendor">
+        </div>
+
+        <div class="form-group">
+          <label for="pm">Payment Method:</label>
+          <input type="text" name="Payment Method" id="pm" placeholder="Payment Method">
+        </div>
+
+        <div class="form-group">
+          <label for="notes">Notes:</label>
+          <input type="text" name="Notes" id="notes" placeholder="Notes">
+        </div>
+
+        <button type="submit" class="submit-btn">Add Transaction</button>
+      </form>
+   </section>
+
+  <!-- <form id="transactionForm">
     <h2>Add Transaction</h2>
     <input name="Date" type="date" required placeholder="Date" />
+
     <input name="Item Name" type="text" required placeholder="Item Name" />
+
     <input name="Category" type="text" placeholder="Category" />
+
     <input name="Quantity" type="number" required step="1" placeholder="Quantity" />
+
     <input name="Price Per Unit" type="number" required step="0.01" placeholder="Price Per Unit" />
+
     <input name="Vendor" type="text" placeholder="Vendor" />
+
     <input name="Payment Method" type="text" placeholder="Payment Method" />
+
     <input name="Notes" type="text" placeholder="Notes" />
+
     <button type="submit">Add Transaction</button>
-  </form>
+  </form> -->
 
   <div class="filters">
     <h2>Filters</h2>
