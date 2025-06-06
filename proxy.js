@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors({
-    origin: "https://finance-tracker-beta-wine.vercel.app"
+  origin: "https://finance-tracker-beta-wine.vercel.app"
 }));
 app.use(express.json());
 

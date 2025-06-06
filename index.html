@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Finance Tracker</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <!-- Link your CSS file here -->
     <link
       rel="stylesheet"
@@ -14,13 +15,21 @@
     <script src="https://unpkg.com/lucide@latest"></script>
   </head>
   <body>
-    <div id="loadingSpinner" style="display:none;" class="fixed top-4 right-4 z-50"><div class="loader"></div></div>
+    <div
+      id="loadingSpinner"
+      style="display: none"
+      class="fixed top-4 right-4 z-50"
+    >
+      <div class="loader"></div>
+    </div>
     <!-- Header -->
     <header class="bg-green-700 text-white shadow-md">
       <div
         class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center"
       >
-        <h1 class="text-2xl text-white font-bold tracking-wide">Harvion Technologies</h1>
+        <h1 class="text-2xl text-white font-bold tracking-wide">
+          Harvion Technologies
+        </h1>
         <!-- Placeholder for future logo or nav -->
         <!-- <img src="/logo.png" alt="Logo" class="h-8"> -->
       </div>
@@ -295,6 +304,32 @@
     <button type="submit">Add Transaction</button>
   </form> -->
 
+  <div class="filters">
+  <input type="text" id="searchText" placeholder="Search..." />
+  <input type="date" id="startDate" />
+  <input type="date" id="endDate" />
+  
+  <select id="categoryFilter">
+    <option value="">All Categories</option>
+    <!-- Add options dynamically or manually -->
+  </select>
+
+  <select id="paymentMethodFilter">
+    <option value="">All Payment Methods</option>
+    <!-- Add options dynamically or manually -->
+  </select>
+
+  <button id="applyFiltersBtn">Apply Filters</button>
+  <button id="resetFiltersBtn">Reset</button>
+</div>
+
+<div class="export-buttons">
+  <button id="exportCSV">Export CSV</button>
+  <button id="exportExcel">Export Excel</button>
+  <button id="exportPDF">Export PDF</button>
+</div>
+
+
     <section class="table-section px-4 sm:px-8 lg:px-16 py-6">
       <h2 class="text-2xl font-bold text-green-900 mb-4">
         Transaction Records
@@ -332,32 +367,68 @@
     </section>
 
     <!-- Edit Modal -->
-<div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-  <div class="bg-white p-6 rounded shadow-md w-full max-w-md relative">
-    <button
-      class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-      onclick="closeEditModal()"
-    >✕</button>
-    <h2 class="text-xl font-semibold mb-4">Edit Transaction</h2>
-    <form id="editForm" onsubmit="submitEdit(event)">
-      <input type="hidden" id="editIndex" />
-      <input type="text" id="editDescription" placeholder="Description" class="border p-2 w-full mb-2" required />
-      <input type="number" id="editAmount" placeholder="Amount" class="border p-2 w-full mb-2" required />
-      <input type="date" id="editDate" class="border p-2 w-full mb-2" required />
-      <input type="text" id="editCategory" placeholder="Category" class="border p-2 w-full mb-2" required />
-      <select id="editPaymentMethod" class="border p-2 w-full mb-2" required>
-        <option value="">Select Payment Method</option>
-        <option value="Cash">Cash</option>
-        <option value="Credit Card">Credit Card</option>
-        <option value="Bank Transfer">Bank Transfer</option>
-      </select>
-      <div class="flex justify-end">
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
+    <div
+      id="editModal"
+      class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50"
+    >
+      <div class="bg-white p-6 rounded shadow-md w-full max-w-md relative">
+        <button
+          class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+          onclick="closeEditModal()"
+        >
+          ✕
+        </button>
+        <h2 class="text-xl font-semibold mb-4">Edit Transaction</h2>
+        <form id="editForm" onsubmit="submitEdit(event)">
+          <input type="hidden" id="editIndex" />
+          <input
+            type="text"
+            id="editDescription"
+            placeholder="Description"
+            class="border p-2 w-full mb-2"
+            required
+          />
+          <input
+            type="number"
+            id="editAmount"
+            placeholder="Amount"
+            class="border p-2 w-full mb-2"
+            required
+          />
+          <input
+            type="date"
+            id="editDate"
+            class="border p-2 w-full mb-2"
+            required
+          />
+          <input
+            type="text"
+            id="editCategory"
+            placeholder="Category"
+            class="border p-2 w-full mb-2"
+            required
+          />
+          <select
+            id="editPaymentMethod"
+            class="border p-2 w-full mb-2"
+            required
+          >
+            <option value="">Select Payment Method</option>
+            <option value="Cash">Cash</option>
+            <option value="Credit Card">Credit Card</option>
+            <option value="Bank Transfer">Bank Transfer</option>
+          </select>
+          <div class="flex justify-end">
+            <button
+              type="submit"
+              class="bg-blue-500 text-white px-4 py-2 rounded"
+            >
+              Save
+            </button>
+          </div>
+        </form>
       </div>
-    </form>
-  </div>
-</div>
-
+    </div>
 
     <!-- <div class="charts">
       <div>
