@@ -204,7 +204,7 @@ function renderPaginationControls(totalItems) {
     for (let i = 1; i <= totalPages; i++) {
         const btn = document.createElement("button");
         btn.textContent = i;
-        btn.className = `mx-1 px-3 py-1 rounded ${i === currentPage ? 'bg-blue-600 text-white' : 'bg-gray-200'}`;
+        btn.className = `mx-1 px-3 py-1 rounded ${i === currentPage ? 'bg-green-700 text-white' : 'bg-green-500'}`;
         btn.addEventListener("click", () => {
             currentPage = i;
             renderTransactionsTable(filteredTransactions);
