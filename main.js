@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "https://finance-tracker-97jz.onrender.com";
 
 let allTransactions = [];
 let filteredTransactions = [];
