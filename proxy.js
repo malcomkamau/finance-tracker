@@ -5,7 +5,9 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(cors({
+    origin: "https://finance-tracker-beta-wine.vercel.app/"
+}));
 app.use(express.json());
 
 const SCRIPT_URL = 'hhttps://script.google.com/macros/s/AKfycbyN6WD1uZzFFC7cZCKOvElma-6ibLBnJr0ClMFAYErBmYylGP5v9lkbQu6z0p1khjppEw/exec';
