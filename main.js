@@ -1,8 +1,10 @@
+// == CONFIG ==
 const BASE_URL = "https://finance-tracker-97jz.onrender.com";
 
 let allTransactions = [];
 let filteredTransactions = [];
 
+// == DOM READY ==
 document.addEventListener("DOMContentLoaded", () => {
     loadTransactions();
 
@@ -14,35 +16,53 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Safe event listener helper
     const addSafeListener = (id, event, handler) => {
         const el = document.getElementById(id);
         if (el) el.addEventListener(event, handler);
     };
 
-    addSafeListener("searchText", "input", applyFilters);
-    addSafeListener("startDate", "change", applyFilters);
-    addSafeListener("endDate", "change", applyFilters);
-    addSafeListener("categoryFilter", "change", applyFilters);
-    addSafeListener("paymentMethodFilter", "change", applyFilters);
-    addSafeListener("applyFiltersBtn", "click", applyFilters);
-    addSafeListener("resetFiltersBtn", "click", resetFilters);
-    addSafeListener("exportCSV", "click", exportToCSV);
-    addSafeListener("exportExcel", "click", exportToExcel);
-    addSafeListener("exportPDF", "click", exportToPDF);
+    [
+        ["searchText", "input", applyFilters],
+        ["startDate", "change", applyFilters],
+        ["endDate", "change", applyFilters],
+        ["categoryFilter", "change", applyFilters],
+        ["paymentMethodFilter", "change", applyFilters],
+        ["applyFiltersBtn", "click", applyFilters],
+        ["resetFiltersBtn", "click", resetFilters],
+        ["exportCSV", "click", exportToCSV],
+        ["exportExcel", "click", exportToExcel],
+        ["exportPDF", "click", exportToPDF],
+    ].forEach(([id, evt, handler]) => addSafeListener(id, evt, handler));
 });
+
+function showSpinner() {
+    const spinner = document.getElementById("loadingSpinner");
+    if (spinner) spinner.style.display = "block";
+}
+
+function hideSpinner() {
+    const spinner = document.getElementById("loadingSpinner");
+    if (spinner) spinner.style.display = "none";
+}
+
+function showToast(message, type = "success") {
+    const toast = document.createElement("div");
+    toast.className = `fixed top-4 right-4 bg-${type === "success" ? "green" : "red"}-600 text-white px-4 py-2 rounded shadow-md z-50 animate-fade-in`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
 
 async function handleFormSubmit(form) {
     const formData = new FormData(form);
     const newTransaction = {};
-
     for (const [key, value] of formData.entries()) {
         newTransaction[key] = value.trim();
     }
-
     newTransaction["Quantity"] = parseFloat(newTransaction["Quantity"]) || 0;
     newTransaction["Price Per Unit"] = parseFloat(newTransaction["Price Per Unit"]) || 0;
 
+    showSpinner();
     try {
         const editingId = form.dataset.editingId;
         const url = editingId ? `${BASE_URL}/api/transaction/${editingId}` : `${BASE_URL}/api/submit`;
@@ -57,32 +77,36 @@ async function handleFormSubmit(form) {
         if (!res.ok) throw new Error(`Failed to ${editingId ? "update" : "submit"}: ${res.statusText}`);
 
         form.reset();
-        delete form.dataset.editingId; // Clear edit mode
+        delete form.dataset.editingId;
         await loadTransactions();
-        alert(`Transaction ${editingId ? "updated" : "added"} successfully!`);
+        showToast(`Transaction ${editingId ? "updated" : "added"} successfully!`, "success");
     } catch (err) {
         console.error(err);
-        alert(`Error ${form.dataset.editingId ? "updating" : "adding"} transaction. Please try again.`);
+        showToast("Error processing transaction. Please try again.", "error");
+    } finally {
+        hideSpinner();
     }
 }
 
 async function loadTransactions() {
+    showSpinner();
     try {
         const res = await fetch(`${BASE_URL}/api/data`);
         if (!res.ok) throw new Error("Failed to fetch transactions");
-
         allTransactions = await res.json();
         filteredTransactions = [...allTransactions];
-
         updateFiltersOptions();
         renderTransactionsTable(filteredTransactions);
         updateSummaryStats(filteredTransactions);
         renderCharts(filteredTransactions);
     } catch (err) {
         console.error("Error loading transactions:", err);
-        alert("Failed to load transactions");
+        showToast("Failed to load transactions", "error");
+    } finally {
+        hideSpinner();
     }
 }
+
 
 function updateFiltersOptions() {
     const categories = Array.from(new Set(allTransactions.map(t => t.Category).filter(Boolean))).sort();
@@ -371,11 +395,14 @@ function generateColors(num) {
 }
 
 function formatDate(dateStr) {
-    if (!dateStr) return "";
-    const d = new Date(dateStr);
-    if (isNaN(d)) return "";
-    return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+    const date = new Date(dateStr);
+    return isNaN(date) ? "" : date.toLocaleDateString("en-KE", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+    });
 }
+
 
 function exportToCSV() {
     if (!filteredTransactions.length) {
