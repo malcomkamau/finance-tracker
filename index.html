@@ -62,6 +62,23 @@
       <button type="submit">Submit</button>
     </form>
 
+    <h3>Filter Transactions</h3>
+    <div id="filters">
+      <input
+        type="text"
+        id="searchText"
+        placeholder="Search by item/vendor/category"
+      />
+      <input type="date" id="startDate" />
+      <input type="date" id="endDate" />
+      <select id="categoryFilter">
+        <option value="">All Categories</option>
+        <!-- Dynamically filled -->
+      </select>
+      <button onclick="applyFilters()">Apply Filters</button>
+      <button onclick="resetFilters()">Reset</button>
+    </div>
+
     <h2>Transaction List</h2>
     <table id="transactionTable">
       <thead></thead>
@@ -93,14 +110,23 @@
         });
 
       // Load transactions into table
-      async function loadTransactions() {
-        const res = await fetch(`${BASE_URL}/api/data`);
-        if (!res.ok) {
-          console.error("Failed to fetch data:", await res.text());
-          return;
-        }
-        const data = await res.json();
+      let fullData = []; // Global data
 
+      async function loadTransactions() {
+        try {
+          const res = await fetch(`${BASE_URL}/api/data`);
+          const data = await res.json();
+
+          fullData = data; // Save full data for filtering
+
+          populateCategoryFilter(data);
+          displayTable(data); // Show all by default
+        } catch (err) {
+          console.error("Failed to fetch data:", err);
+        }
+      }
+
+      function displayTable(data) {
         const thead = document.querySelector("#transactionTable thead");
         const tbody = document.querySelector("#transactionTable tbody");
         thead.innerHTML = "";
@@ -108,7 +134,6 @@
 
         if (data.length === 0) return;
 
-        // Header
         const headerRow = document.createElement("tr");
         Object.keys(data[0]).forEach((key) => {
           const th = document.createElement("th");
@@ -117,7 +142,6 @@
         });
         thead.appendChild(headerRow);
 
-        // Rows
         data.forEach((row) => {
           const tr = document.createElement("tr");
           Object.values(row).forEach((value) => {
@@ -126,6 +150,55 @@
             tr.appendChild(td);
           });
           tbody.appendChild(tr);
+        });
+      }
+
+      function applyFilters() {
+        const searchText = document
+          .getElementById("searchText")
+          .value.toLowerCase();
+        const startDate = document.getElementById("startDate").value;
+        const endDate = document.getElementById("endDate").value;
+        const category = document.getElementById("categoryFilter").value;
+
+        const filtered = fullData.filter((tx) => {
+          const date = tx.Date || "";
+          const item = tx["Item Name"]?.toLowerCase() || "";
+          const vendor = tx["Vendor"]?.toLowerCase() || "";
+          const cat = tx["Category"]?.toLowerCase() || "";
+
+          const matchesSearch =
+            item.includes(searchText) ||
+            vendor.includes(searchText) ||
+            cat.includes(searchText);
+
+          const matchesCategory = !category || tx["Category"] === category;
+          const matchesStart = !startDate || date >= startDate;
+          const matchesEnd = !endDate || date <= endDate;
+
+          return matchesSearch && matchesCategory && matchesStart && matchesEnd;
+        });
+
+        displayTable(filtered);
+      }
+
+      function resetFilters() {
+        document.getElementById("searchText").value = "";
+        document.getElementById("startDate").value = "";
+        document.getElementById("endDate").value = "";
+        document.getElementById("categoryFilter").value = "";
+        displayTable(fullData);
+      }
+
+      function populateCategoryFilter(data) {
+        const select = document.getElementById("categoryFilter");
+        const categories = [...new Set(data.map((tx) => tx.Category))];
+        select.innerHTML = '<option value="">All Categories</option>';
+        categories.forEach((cat) => {
+          const option = document.createElement("option");
+          option.value = cat;
+          option.textContent = cat;
+          select.appendChild(option);
         });
       }
 
