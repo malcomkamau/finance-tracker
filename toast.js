@@ -1,116 +1,28 @@
-// Elements
-const form = document.getElementById('transactionForm');
-const toastContainer = document.getElementById('toastContainer');
-const tbody = document.querySelector('#transactionTable tbody');
-const totalIncomeEl = document.getElementById('totalIncome');
-const totalExpenseEl = document.getElementById('totalExpense');
-const balanceEl = document.getElementById('balance');
-const totalAmountEl = document.getElementById('totalAmount');
+document.addEventListener('DOMContentLoaded', () => {
+  const toastContainer = document.getElementById('toastContainer');
 
-let transactions = [];
-
-// Helper to format date nicely
-function formatDate(dateStr) {
-  const options = { year: 'numeric', month: 'short', day: 'numeric' };
-  return new Date(dateStr).toLocaleDateString(undefined, options);
-}
-
-// Toast notification function
-function showToast(message, type = 'success', duration = 3000) {
-  const toast = document.createElement('div');
-  toast.classList.add('toast');
-  if (type === 'error') toast.classList.add('error');
-  else if (type === 'loading') toast.classList.add('loading');
-
-  toast.textContent = message;
-  toastContainer.appendChild(toast);
-
-  // Remove toast on click
-  toast.addEventListener('click', () => {
-    toastContainer.removeChild(toast);
-  });
-
-  if (type !== 'loading') {
-    setTimeout(() => {
-      if (toastContainer.contains(toast)) {
-        toast.classList.add('fade-out');
-        toast.addEventListener('transitionend', () => {
-          toastContainer.removeChild(toast);
-        });
-      }
-    }, duration);
-  }
-
-  return toast;
-}
-
-// Render transactions in table
-function renderTransactions() {
-  tbody.innerHTML = '';
-  transactions.forEach(({ description, amount, type, date }) => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${description}</td>
-      <td>${amount.toFixed(2)}</td>
-      <td>${type}</td>
-      <td>${formatDate(date)}</td>
-    `;
-    tbody.appendChild(tr);
-  });
-  updateTotals();
-}
-
-// Update totals and balance
-function updateTotals() {
-  let totalIncome = 0;
-  let totalExpense = 0;
-
-  transactions.forEach(({ amount, type }) => {
-    if (type === 'income') totalIncome += amount;
-    else totalExpense += amount;
-  });
-
-  totalIncomeEl.textContent = totalIncome.toFixed(2);
-  totalExpenseEl.textContent = totalExpense.toFixed(2);
-  const balance = totalIncome - totalExpense;
-  balanceEl.textContent = balance.toFixed(2);
-  totalAmountEl.textContent = (totalIncome + totalExpense).toFixed(2);
-}
-
-// Form submission handler
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
-
-  const description = form.description.value.trim();
-  const amount = parseFloat(form.amount.value);
-  const type = form.type.value;
-  const date = form.date.value;
-
-  // Basic validation
-  if (!description || isNaN(amount) || !type || !date) {
-    showToast('Please fill in all fields correctly.', 'error');
+  if (!toastContainer) {
+    console.error('Toast container not found.');
     return;
   }
 
-  // Show loading toast
-  const loadingToast = showToast('Adding transaction...', 'loading', 0);
+  window.showToast = function (message, type = 'success', duration = 3000) {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerText = message;
 
-  // Simulate async operation (e.g., saving data)
-  setTimeout(() => {
-    transactions.push({ description, amount, type, date });
-    renderTransactions();
+    // Style (optional, can also be in CSS)
+    toast.style.padding = '10px';
+    toast.style.margin = '10px';
+    toast.style.borderRadius = '5px';
+    toast.style.backgroundColor = type === 'success' ? '#4caf50' : '#f44336';
+    toast.style.color = 'white';
+    toast.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.2)';
 
-    // Remove loading toast
-    if (loadingToast && loadingToast.parentNode) {
-      toastContainer.removeChild(loadingToast);
-    }
+    toastContainer.appendChild(toast);
 
-    showToast('Transaction added successfully!', 'success');
-
-    // Reset form
-    form.reset();
-  }, 1000);
+    setTimeout(() => {
+      toast.remove();
+    }, duration);
+  };
 });
-
-// Initial render
-renderTransactions();

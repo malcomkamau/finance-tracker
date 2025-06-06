@@ -290,7 +290,7 @@ function exportToPDF() {
     t["Item Name"] || "",
     t.Category || "",
     t.Quantity,
-    `$${t["Price Per Unit"].toFixed(2)}`,
+    `Kes ${t["Price Per Unit"].toFixed(2)}`,
     t.Vendor || "",
     t["Payment Method"] || "",
     t.Notes || ""
