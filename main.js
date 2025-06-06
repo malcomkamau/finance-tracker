@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
       newTransaction["Price Per Unit"] = parseFloat(newTransaction["Price Per Unit"]) || 0;
 
       try {
-        const res = await fetch(`${BASE_URL}/api/data`, {
+        const res = await fetch(`${BASE_URL}/api/submit`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(newTransaction),
