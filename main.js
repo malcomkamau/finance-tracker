@@ -292,16 +292,23 @@ function updateTableFooter(transactions, tfoot) {
 }
 
 function updateSummaryStats(transactions) {
-    // You can expand this to update UI elements showing summary stats
-    // Example: total transactions count, total amount spent, etc.
-    const totalAmount = transactions.reduce((acc, t) => acc + ((Number(t.Quantity) || 0) * (Number(t["Price Per Unit"]) || 0)), 0);
     const totalCount = transactions.length;
+    const totalQuantity = transactions.reduce((acc, t) => acc + (Number(t.Quantity) || 0), 0);
+    const totalAmount = transactions.reduce((acc, t) => {
+        const qty = Number(t.Quantity) || 0;
+        const price = Number(t["Price Per Unit"]) || 0;
+        return acc + (qty * price);
+    }, 0);
 
-    const statsEl = document.getElementById("summaryStats");
-    if (statsEl) {
-        statsEl.textContent = `Showing ${totalCount} transactions, Total Amount: Kes ${totalAmount.toFixed(2)}`;
-    }
+    const txEl = document.getElementById("totalTransactions");
+    const qtyEl = document.getElementById("totalQuantity");
+    const amtEl = document.getElementById("totalSpending");
+
+    if (txEl) txEl.textContent = totalCount;
+    if (qtyEl) qtyEl.textContent = totalQuantity;
+    if (amtEl) amtEl.textContent = totalAmount.toFixed(2);
 }
+
 
 function renderCharts(transactions) {
     // Example: Pie chart for category distribution, Bar chart for monthly expenses
