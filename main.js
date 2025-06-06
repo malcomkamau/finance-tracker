@@ -6,50 +6,51 @@ let filteredTransactions = [];
 document.addEventListener("DOMContentLoaded", () => {
   loadTransactions();
 
-  // Form submission
-  document.getElementById("transactionForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const form = e.target;
+  const form = document.getElementById("transactionForm");
+  if (form) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const newTransaction = {};
+      for (const [key, value] of formData.entries()) {
+        newTransaction[key] = value.trim();
+      }
+      newTransaction["Quantity"] = parseFloat(newTransaction["Quantity"]) || 0;
+      newTransaction["Price Per Unit"] = parseFloat(newTransaction["Price Per Unit"]) || 0;
 
-    const formData = new FormData(form);
-    const newTransaction = {};
-    for (const [key, value] of formData.entries()) {
-      newTransaction[key] = value.trim();
-    }
-    newTransaction["Quantity"] = parseFloat(newTransaction["Quantity"]) || 0;
-    newTransaction["Price Per Unit"] = parseFloat(newTransaction["Price Per Unit"]) || 0;
+      try {
+        const res = await fetch(`${BASE_URL}/api/data`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newTransaction),
+        });
+        if (!res.ok) throw new Error(`Failed to submit: ${res.statusText}`);
 
-    try {
-      const res = await fetch(`${BASE_URL}/api/data`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newTransaction),
-      });
-      if (!res.ok) throw new Error(`Failed to submit: ${res.statusText}`);
+        form.reset();
+        await loadTransactions();
+        alert("Transaction added successfully!");
+      } catch (err) {
+        console.error(err);
+        alert("Error adding transaction. Please try again.");
+      }
+    });
+  }
 
-      form.reset();
-      await loadTransactions();
-      alert("Transaction added successfully!");
-    } catch (err) {
-      console.error(err);
-      alert("Error adding transaction. Please try again.");
-    }
-  });
+  const addSafeListener = (id, event, handler) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener(event, handler);
+  };
 
-  // Filters event listeners
-  document.getElementById("searchText").addEventListener("input", applyFilters);
-  document.getElementById("startDate").addEventListener("change", applyFilters);
-  document.getElementById("endDate").addEventListener("change", applyFilters);
-  document.getElementById("categoryFilter").addEventListener("change", applyFilters);
-  document.getElementById("paymentMethodFilter").addEventListener("change", applyFilters);
-
-  // Buttons
-  document.getElementById("applyFiltersBtn").addEventListener("click", applyFilters);
-  document.getElementById("resetFiltersBtn").addEventListener("click", resetFilters);
-
-  document.getElementById("exportCSV").addEventListener("click", exportToCSV);
-  document.getElementById("exportExcel").addEventListener("click", exportToExcel);
-  document.getElementById("exportPDF").addEventListener("click", exportToPDF);
+  addSafeListener("searchText", "input", applyFilters);
+  addSafeListener("startDate", "change", applyFilters);
+  addSafeListener("endDate", "change", applyFilters);
+  addSafeListener("categoryFilter", "change", applyFilters);
+  addSafeListener("paymentMethodFilter", "change", applyFilters);
+  addSafeListener("applyFiltersBtn", "click", applyFilters);
+  addSafeListener("resetFiltersBtn", "click", resetFilters);
+  addSafeListener("exportCSV", "click", exportToCSV);
+  addSafeListener("exportExcel", "click", exportToExcel);
+  addSafeListener("exportPDF", "click", exportToPDF);
 });
 
 async function loadTransactions() {
@@ -74,19 +75,23 @@ function updateFiltersOptions() {
   const categoryFilter = document.getElementById("categoryFilter");
   const paymentMethodFilter = document.getElementById("paymentMethodFilter");
 
-  categoryFilter.innerHTML = '<option value="">All Categories</option>' +
-    categories.map(c => `<option value="${c}">${c}</option>`).join("");
+  if (categoryFilter) {
+    categoryFilter.innerHTML = '<option value="">All Categories</option>' +
+      categories.map(c => `<option value="${c}">${c}</option>`).join("");
+  }
 
-  paymentMethodFilter.innerHTML = '<option value="">All Payment Methods</option>' +
-    paymentMethods.map(p => `<option value="${p}">${p}</option>`).join("");
+  if (paymentMethodFilter) {
+    paymentMethodFilter.innerHTML = '<option value="">All Payment Methods</option>' +
+      paymentMethods.map(p => `<option value="${p}">${p}</option>`).join("");
+  }
 }
 
 function applyFilters() {
-  const searchText = document.getElementById("searchText").value.toLowerCase();
-  const startDate = document.getElementById("startDate").value;
-  const endDate = document.getElementById("endDate").value;
-  const category = document.getElementById("categoryFilter").value;
-  const paymentMethod = document.getElementById("paymentMethodFilter").value;
+  const searchText = document.getElementById("searchText")?.value.toLowerCase() || "";
+  const startDate = document.getElementById("startDate")?.value;
+  const endDate = document.getElementById("endDate")?.value;
+  const category = document.getElementById("categoryFilter")?.value;
+  const paymentMethod = document.getElementById("paymentMethodFilter")?.value;
 
   filteredTransactions = allTransactions.filter(t => {
     const matchSearch =
@@ -109,11 +114,10 @@ function applyFilters() {
 }
 
 function resetFilters() {
-  document.getElementById("searchText").value = "";
-  document.getElementById("startDate").value = "";
-  document.getElementById("endDate").value = "";
-  document.getElementById("categoryFilter").value = "";
-  document.getElementById("paymentMethodFilter").value = "";
+  ["searchText", "startDate", "endDate", "categoryFilter", "paymentMethodFilter"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
+  });
 
   filteredTransactions = [...allTransactions];
   renderTransactionsTable(filteredTransactions);
@@ -123,9 +127,13 @@ function resetFilters() {
 
 function renderTransactionsTable(transactions) {
   const table = document.getElementById("transactionTable");
+  if (!table) return;
+
   const thead = table.querySelector("thead");
   const tbody = table.querySelector("tbody");
   const tfoot = table.querySelector("tfoot");
+
+  if (!thead || !tbody || !tfoot) return;
 
   if (transactions.length === 0) {
     tbody.innerHTML = "<tr><td colspan='8'>No transactions found.</td></tr>";
@@ -133,7 +141,6 @@ function renderTransactionsTable(transactions) {
     return;
   }
 
-  // Table headers (ensure matching your fields)
   thead.innerHTML = `
     <tr>
       <th>Date</th>
@@ -160,7 +167,6 @@ function renderTransactionsTable(transactions) {
     </tr>
   `).join("");
 
-  // Totals row
   const totalQuantity = transactions.reduce((sum, t) => sum + t.Quantity, 0);
   const totalSpending = transactions.reduce((sum, t) => sum + t.Quantity * t["Price Per Unit"], 0);
   tfoot.innerHTML = `
@@ -174,16 +180,21 @@ function renderTransactionsTable(transactions) {
 }
 
 function updateSummaryStats(transactions) {
-  document.getElementById("totalTransactions").textContent = transactions.length;
+  const totalTransactionsEl = document.getElementById("totalTransactions");
+  const totalQuantityEl = document.getElementById("totalQuantity");
+  const totalSpendingEl = document.getElementById("totalSpending");
+
+  if (!totalTransactionsEl || !totalQuantityEl || !totalSpendingEl) return;
+
+  totalTransactionsEl.textContent = transactions.length;
   const totalQuantity = transactions.reduce((sum, t) => sum + t.Quantity, 0);
   const totalSpending = transactions.reduce((sum, t) => sum + t.Quantity * t["Price Per Unit"], 0);
 
-  document.getElementById("totalQuantity").textContent = totalQuantity;
-  document.getElementById("totalSpending").textContent = totalSpending.toFixed(2);
+  totalQuantityEl.textContent = totalQuantity;
+  totalSpendingEl.textContent = totalSpending.toFixed(2);
 }
 
 function renderCharts(transactions) {
-  // Spending by Category chart
   const categoryData = {};
   transactions.forEach(t => {
     if (t.Category) {
@@ -196,7 +207,6 @@ function renderCharts(transactions) {
   renderChart("categoryChart", categoryLabels, categoryValues, "Spending by Category");
   renderChart("dashboardCategoryChart", categoryLabels, categoryValues, "Spending by Category");
 
-  // Spending over time chart
   const timeData = {};
   transactions.forEach(t => {
     if (t.Date) {
@@ -213,10 +223,14 @@ function renderCharts(transactions) {
 
 let chartInstances = {};
 function renderChart(canvasId, labels, data, label, type = "bar") {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+
   if (chartInstances[canvasId]) {
     chartInstances[canvasId].destroy();
   }
-  const ctx = document.getElementById(canvasId).getContext("2d");
+
   chartInstances[canvasId] = new Chart(ctx, {
     type,
     data: {
@@ -233,14 +247,11 @@ function renderChart(canvasId, labels, data, label, type = "bar") {
     },
     options: {
       responsive: true,
-      scales: {
-        y: { beginAtZero: true }
-      }
+      scales: { y: { beginAtZero: true } }
     }
   });
 }
 
-// Date formatting helpers
 function formatDate(dateStr) {
   const d = new Date(dateStr);
   return d.toLocaleDateString();
@@ -250,7 +261,6 @@ function formatMonthYear(dateStr) {
   return d.toLocaleString('default', { month: 'short', year: 'numeric' });
 }
 
-// Export functions (simplified)
 function exportToCSV() {
   const data = getExportData();
   const csv = convertToCSV(data);
@@ -295,8 +305,8 @@ function exportToPDF() {
 }
 
 function getExportData() {
-  const exportFilteredOnly = document.getElementById("exportFiltered").checked;
-  return exportFilteredOnly ? filteredTransactions : allTransactions;
+  const checkbox = document.getElementById("exportFiltered");
+  return checkbox && checkbox.checked ? filteredTransactions : allTransactions;
 }
 
 function convertToCSV(arr) {
