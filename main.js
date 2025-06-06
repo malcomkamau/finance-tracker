@@ -51,6 +51,38 @@ document.addEventListener("DOMContentLoaded", () => {
   addSafeListener("exportCSV", "click", exportToCSV);
   addSafeListener("exportExcel", "click", exportToExcel);
   addSafeListener("exportPDF", "click", exportToPDF);
+
+  // Event delegation for action buttons
+  const table = document.getElementById("transactionTable");
+  if (table) {
+    table.addEventListener("click", async (e) => {
+      const editBtn = e.target.closest(".edit-btn");
+      const deleteBtn = e.target.closest(".delete-btn");
+
+      if (editBtn) {
+        const id = editBtn.dataset.id;
+        // You can implement your edit logic here, e.g., open a modal with form filled
+        alert(`Edit clicked for transaction ID: ${id}`);
+      }
+
+      if (deleteBtn) {
+        const id = deleteBtn.dataset.id;
+        if (confirm("Are you sure you want to delete this transaction?")) {
+          try {
+            const res = await fetch(`${BASE_URL}/api/delete/${id}`, {
+              method: "DELETE",
+            });
+            if (!res.ok) throw new Error(`Delete failed: ${res.statusText}`);
+            alert("Transaction deleted.");
+            await loadTransactions();
+          } catch (err) {
+            console.error(err);
+            alert("Failed to delete transaction.");
+          }
+        }
+      }
+    });
+  }
 });
 
 async function loadTransactions() {
@@ -136,47 +168,69 @@ function renderTransactionsTable(transactions) {
   if (!thead || !tbody || !tfoot) return;
 
   if (transactions.length === 0) {
-    tbody.innerHTML = "<tr><td colspan='8'>No transactions found.</td></tr>";
+    tbody.innerHTML = "<tr><td colspan='9'>No transactions found.</td></tr>";
     tfoot.innerHTML = "";
     return;
   }
 
+  // Updated header to include Actions column
   thead.innerHTML = `
-    <tr>
-      <th>Date</th>
-      <th>Item Name</th>
-      <th>Category</th>
-      <th>Quantity</th>
-      <th>Price Per Unit</th>
-      <th>Vendor</th>
-      <th>Payment Method</th>
-      <th>Notes</th>
+    <tr class="bg-green-100 text-green-900 font-semibold">
+      <th class="px-4 py-3">Date</th>
+      <th class="px-4 py-3">Item Name</th>
+      <th class="px-4 py-3">Category</th>
+      <th class="px-4 py-3">Quantity</th>
+      <th class="px-4 py-3">Price Per Unit</th>
+      <th class="px-4 py-3">Vendor</th>
+      <th class="px-4 py-3">Payment Method</th>
+      <th class="px-4 py-3">Notes</th>
+      <th class="px-4 py-3">Total (Kes)</th>
+      <th class="px-4 py-3">Actions</th>
     </tr>
   `;
 
   tbody.innerHTML = transactions.map(t => `
-    <tr>
-      <td>${formatDate(t.Date)}</td>
-      <td>${t["Item Name"] || ""}</td>
-      <td>${t.Category || ""}</td>
-      <td>${t.Quantity}</td>
-      <td>Kes ${t["Price Per Unit"].toFixed(2)}</td>
-      <td>${t.Vendor || ""}</td>
-      <td>${t["Payment Method"] || ""}</td>
-      <td>${t.Notes || ""}</td>
+    <tr class="border-b border-green-200">
+      <td class="px-4 py-3">${formatDate(t.Date)}</td>
+      <td class="px-4 py-3">${t["Item Name"] || ""}</td>
+      <td class="px-4 py-3">${t.Category || ""}</td>
+      <td class="px-4 py-3">${t.Quantity}</td>
+      <td class="px-4 py-3">Kes ${t["Price Per Unit"].toFixed(2)}</td>
+      <td class="px-4 py-3">${t.Vendor || ""}</td>
+      <td class="px-4 py-3">${t["Payment Method"] || ""}</td>
+      <td class="px-4 py-3">${t.Notes || ""}</td>
+      <td class="px-4 py-3">${(t.Quantity * t["Price Per Unit"]).toFixed(2)}</td>
+      <td class="px-4 py-3 flex space-x-2">
+        <button
+          class="edit-btn bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm"
+          data-id="${t.id}" title="Edit"
+        >Edit</button>
+        <button
+          class="delete-btn bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm"
+          data-id="${t.id}" title="Delete"
+        >Delete</button>
+      </td>
     </tr>
   `).join("");
 
   const totalQuantity = transactions.reduce((sum, t) => sum + t.Quantity, 0);
   const totalSpending = transactions.reduce((sum, t) => sum + t.Quantity * t["Price Per Unit"], 0);
+
   tfoot.innerHTML = `
-    <tr>
-      <td colspan="3"><strong>Totals</strong></td>
-      <td><strong>${totalQuantity}</strong></td>
-      <td><strong>Kes ${totalSpending.toFixed(2)}</strong></td>
-      <td colspan="3"></td>
+    <tr class="bg-green-100 font-semibold text-green-900">
+      <td colspan="3" class="px-4 py-3 text-right">Totals:</td>
+      <td class="px-4 py-3">${totalQuantity}</td>
+      <td colspan="4"></td>
+      <td class="px-4 py-3">Kes ${totalSpending.toFixed(2)}</td>
+      <td></td>
     </tr>
   `;
+}
+
+function formatDate(dateString) {
+  const d = new Date(dateString);
+  if (isNaN(d)) return "";
+  return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
 }
 
 function updateSummaryStats(transactions) {
