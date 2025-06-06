@@ -22,6 +22,7 @@
         margin: 0.5rem 0;
       }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
     <h2>Add Transaction</h2>
@@ -79,6 +80,13 @@
       <button onclick="resetFilters()">Reset</button>
     </div>
 
+    <h3>Spending by Category</h3>
+<canvas id="categoryChart" width="600" height="300"></canvas>
+
+<h3>Spending Over Time</h3>
+<canvas id="timeChart" width="600" height="300"></canvas>
+
+
     <h2>Transaction List</h2>
     <table id="transactionTable">
       <thead></thead>
@@ -121,6 +129,7 @@
 
           populateCategoryFilter(data);
           displayTable(data); // Show all by default
+          updateCharts(data);
         } catch (err) {
           console.error("Failed to fetch data:", err);
         }
@@ -151,6 +160,7 @@
           });
           tbody.appendChild(tr);
         });
+
       }
 
       function applyFilters() {
@@ -178,8 +188,9 @@
 
           return matchesSearch && matchesCategory && matchesStart && matchesEnd;
         });
-
+        
         displayTable(filtered);
+        updateCharts(filtered);
       }
 
       function resetFilters() {
@@ -201,6 +212,66 @@
           select.appendChild(option);
         });
       }
+
+      let categoryChart, timeChart;
+
+function updateCharts(data) {
+  // --- Group by category ---
+  const categoryTotals = {};
+  data.forEach((tx) => {
+    const cat = tx.Category;
+    const total = (parseFloat(tx["Quantity"]) || 0) * (parseFloat(tx["Price Per Unit"]) || 0);
+    categoryTotals[cat] = (categoryTotals[cat] || 0) + total;
+  });
+
+  const catLabels = Object.keys(categoryTotals);
+  const catValues = Object.values(categoryTotals);
+
+  // Destroy previous chart if exists
+  if (categoryChart) categoryChart.destroy();
+  categoryChart = new Chart(document.getElementById("categoryChart"), {
+    type: "bar",
+    data: {
+      labels: catLabels,
+      datasets: [
+        {
+          label: "Total Spending",
+          data: catValues,
+          backgroundColor: "rgba(75, 192, 192, 0.6)",
+        },
+      ],
+    },
+  });
+
+  // --- Group by date ---
+  const dateTotals = {};
+  data.forEach((tx) => {
+    const date = tx.Date;
+    const total = (parseFloat(tx["Quantity"]) || 0) * (parseFloat(tx["Price Per Unit"]) || 0);
+    dateTotals[date] = (dateTotals[date] || 0) + total;
+  });
+
+  const sortedDates = Object.keys(dateTotals).sort();
+  const dateValues = sortedDates.map((date) => dateTotals[date]);
+
+  if (timeChart) timeChart.destroy();
+  timeChart = new Chart(document.getElementById("timeChart"), {
+    type: "line",
+    data: {
+      labels: sortedDates,
+      datasets: [
+        {
+          label: "Spending Over Time",
+          data: dateValues,
+          borderColor: "rgba(153, 102, 255, 0.8)",
+          fill: false,
+          tension: 0.2,
+        },
+      ],
+    },
+  });
+}
+
 
       loadTransactions(); // Initial load
     </script>
