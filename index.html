@@ -1,44 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Finance Tracker</title>
-  <link rel="stylesheet" href="style.css"> <!-- Link your CSS file here -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.css"/>
-  <script src="https://cdn.tailwindcss.com"></script>
-
-</head>
-<body>
-<!-- Header -->
-  <header class="site-header">
-    <div class="container header-content">
-      <!-- <img src="logo.png" alt="Company Logo" class="logo" /> -->
-      <h1 class="company-name">Harvion Technologies</h1>
-    </div>
-  </header>
-
-  <!-- Dashboard -->
-  <section class="dashboard">
-    <h2 class="text-2xl font-bold text-gray-800 mb-4">Dashboard Summary</h2>
-    <div class="summary-cards">
-      <div class="card">
-        <span class="text-xl font-semibold text-gray-700 mb-3">Total Transactions</span>
-        <p id="totalTransactions">0</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finance Tracker</title>
+    <link rel="stylesheet" href="style.css" />
+    <!-- Link your CSS file here -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="bg-green-700 text-white shadow-md">
+      <div
+        class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <h1 class="text-2xl font-bold tracking-wide">Harvion Technologies</h1>
+        <!-- Placeholder for future logo or nav -->
+        <!-- <img src="/logo.png" alt="Logo" class="h-8"> -->
       </div>
-      <div class="card">
-        <span class="text-xl font-semibold text-gray-700 mb-3">Total Quantity</span>
-        <p id="totalQuantity">0</p>
-      </div>
-      <div class="card">
-        <span class="text-xl font-semibold text-gray-700 mb-3">Total Spending (Kes)</span>
-        <p id="totalSpending">0.00</p>
-      </div>
-    </div>
-  </section>
+    </header>
 
-  <!-- Form Section -->
-   <!-- <section class="form-section">
+    <!-- Dashboard -->
+    <section class="bg-white py-6 shadow-sm">
+      <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-2xl font-bold text-green-800 mb-6">
+          Dashboard Summary
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <div
+            class="bg-green-100 border-l-4 border-green-700 p-4 rounded-md shadow flex items-center gap-4"
+          >
+            <i data-lucide="list-check" class="text-green-700 w-6 h-6"></i>
+            <div>
+              <span class="text-sm font-medium text-green-800"
+                >Total Transactions</span
+              >
+              <p
+                id="totalTransactions"
+                class="text-2xl font-bold text-green-900 mt-1"
+              >
+                0
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="bg-green-100 border-l-4 border-green-700 p-4 rounded-md shadow flex items-center gap-4"
+          >
+            <i data-lucide="package" class="text-green-700 w-6 h-6"></i>
+            <div>
+              <span class="text-sm font-medium text-green-800"
+                >Total Quantity</span
+              >
+              <p
+                id="totalQuantity"
+                class="text-2xl font-bold text-green-900 mt-1"
+              >
+                0
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="bg-green-100 border-l-4 border-green-700 p-4 rounded-md shadow flex items-center gap-4"
+          >
+            <i data-lucide="wallet" class="text-green-700 w-6 h-6"></i>
+            <div>
+              <span class="text-sm font-medium text-green-800"
+                >Total Spending (Kes)</span
+              >
+              <p
+                id="totalSpending"
+                class="text-2xl font-bold text-green-900 mt-1"
+              >
+                0.00
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Form Section -->
+    <!-- <section class="form-section">
       <h2>Add New Transaction</h2>
       <form id="transactionForm" class="transaction-form">
 
@@ -86,57 +135,131 @@
       </form>
    </section> -->
 
-   <section class="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto mt-6">
-  <h2 class="text-2xl font-bold text-gray-800 mb-4">Add New Transaction</h2>
-  <form id="transactionForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div>
-      <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
-      <input type="date" name="Date" id="date" required class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-    </div>
+    <section class="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto mt-6">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">Add New Transaction</h2>
+      <form id="transactionForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label for="date" class="block text-sm font-medium text-gray-700"
+            >Date</label
+          >
+          <input
+            type="date"
+            name="Date"
+            id="date"
+            required
+            class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-    <div>
-      <label for="itemName" class="block text-sm font-medium text-gray-700">Item Name</label>
-      <input type="text" name="Item Name" id="itemName" required placeholder="e.g. Cement" class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-    </div>
+        <div>
+          <label for="itemName" class="block text-sm font-medium text-gray-700"
+            >Item Name</label
+          >
+          <input
+            type="text"
+            name="Item Name"
+            id="itemName"
+            required
+            placeholder="e.g. Cement"
+            class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-    <div>
-      <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
-      <input type="text" name="Category" id="category" required placeholder="e.g. Materials" class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-    </div>
+        <div>
+          <label for="category" class="block text-sm font-medium text-gray-700"
+            >Category</label
+          >
+          <input
+            type="text"
+            name="Category"
+            id="category"
+            required
+            placeholder="e.g. Materials"
+            class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-    <div>
-      <label for="qty" class="block text-sm font-medium text-gray-700">Quantity</label>
-      <input type="number" name="Quantity" id="qty" required step="1" placeholder="e.g. 10" class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-    </div>
+        <div>
+          <label for="qty" class="block text-sm font-medium text-gray-700"
+            >Quantity</label
+          >
+          <input
+            type="number"
+            name="Quantity"
+            id="qty"
+            required
+            step="1"
+            placeholder="e.g. 10"
+            class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-    <div>
-      <label for="ppu" class="block text-sm font-medium text-gray-700">Price Per Unit</label>
-      <input type="number" name="Price Per Unit" id="ppu" required step="1" placeholder="e.g. 300" class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-    </div>
+        <div>
+          <label for="ppu" class="block text-sm font-medium text-gray-700"
+            >Price Per Unit</label
+          >
+          <input
+            type="number"
+            name="Price Per Unit"
+            id="ppu"
+            required
+            step="1"
+            placeholder="e.g. 300"
+            class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-    <div>
-      <label for="vendor" class="block text-sm font-medium text-gray-700">Vendor</label>
-      <input type="text" name="Vendor" id="vendor" placeholder="Optional" class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-    </div>
+        <div>
+          <label for="vendor" class="block text-sm font-medium text-gray-700"
+            >Vendor</label
+          >
+          <input
+            type="text"
+            name="Vendor"
+            id="vendor"
+            placeholder="Optional"
+            class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-    <div>
-      <label for="pm" class="block text-sm font-medium text-gray-700">Payment Method</label>
-      <input type="text" name="Payment Method" id="pm" placeholder="e.g. Cash, M-PESA" class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-    </div>
+        <div>
+          <label for="pm" class="block text-sm font-medium text-gray-700"
+            >Payment Method</label
+          >
+          <input
+            type="text"
+            name="Payment Method"
+            id="pm"
+            placeholder="e.g. Cash, M-PESA"
+            class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-    <div>
-      <label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
-      <input type="text" name="Notes" id="notes" placeholder="Additional info" class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-    </div>
+        <div>
+          <label for="notes" class="block text-sm font-medium text-gray-700"
+            >Notes</label
+          >
+          <input
+            type="text"
+            name="Notes"
+            id="notes"
+            placeholder="Additional info"
+            class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-    <div class="md:col-span-2">
-      <button type="submit" class="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition">Add Transaction</button>
-    </div>
-  </form>
-</section>
+        <div class="md:col-span-2">
+          <button
+            type="submit"
+            class="bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-md shadow-sm transition duration-200"
+          >
+            Add Transaction
+          </button>
+        </div>
+      </form>
+    </section>
 
-
-  <!-- <form id="transactionForm">
+    <!-- <form id="transactionForm">
     <h2>Add Transaction</h2>
     <input name="Date" type="date" required placeholder="Date" />
 
@@ -157,75 +280,78 @@
     <button type="submit">Add Transaction</button>
   </form> -->
 
-  <!-- Transaction Table -->
-  <section class="table-section">
-    <div class="filters">
-    <h2 class="text-2xl font-bold text-gray-800 mb-4">Filters</h2>
-    <input id="searchText" type="text" placeholder="Search..." />
-    <input id="startDate" type="date" />
-    <input id="endDate" type="date" />
-    <select id="categoryFilter"></select>
-    <select id="paymentMethodFilter"></select>
-    <button id="applyFiltersBtn">Apply Filters</button>
-    <button id="resetFiltersBtn">Reset Filters</button>
+    <section class="table-section px-4 sm:px-8 lg:px-16 py-6">
+  <h2 class="text-2xl font-bold text-green-900 mb-4">Transaction Records</h2>
+  <div class="overflow-x-auto rounded-lg shadow ring-1 ring-black/5">
+    <table id="transactionTable" class="min-w-full bg-white text-sm text-left">
+      <thead class="bg-green-100 text-green-900 font-semibold">
+        <tr>
+          <th class="px-4 py-3">Date</th>
+          <th class="px-4 py-3">Item Name</th>
+          <th class="px-4 py-3">Category</th>
+          <th class="px-4 py-3">Quantity</th>
+          <th class="px-4 py-3">Price Per Unit</th>
+          <th class="px-4 py-3">Vendor</th>
+          <th class="px-4 py-3">Payment Method</th>
+          <th class="px-4 py-3">Notes</th>
+          <th class="px-4 py-3">Total (Kes)</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody" class="divide-y divide-gray-200">
+        <!-- Rows will be injected dynamically via JS -->
+      </tbody>
+      <tfoot class="bg-green-50 font-medium text-green-800">
+        <tr>
+          <td colspan="8" class="px-4 py-3 text-right">Total</td>
+          <td id="totalRow" class="px-4 py-3">0.00</td>
+        </tr>
+      </tfoot>
+    </table>
   </div>
+</section>
 
-  <div class="summary">
-    <strong>Total Transactions:</strong> <span id="totalTransactions">0</span><br />
-    <strong>Total Quantity:</strong> <span id="totalQuantity">0</span><br />
-    <strong>Total Spending:</strong> $<span id="totalSpending">0.00</span>
-  </div>
 
-  <table id="transactionTable">
-    <thead></thead>
-    <tbody></tbody>
-    <tfoot></tfoot>
-  </table>
-
-  <div>
-    <h2 class="text-2xl font-bold text-gray-800 mb-4">Export Options</h2>
-    <label><input type="checkbox" id="exportFiltered" /> Export Filtered Data Only</label><br />
-    <button id="exportCSV">Export CSV</button>
-    <button id="exportExcel">Export Excel</button>
-    <button id="exportPDF">Export PDF</button>
-  </div>
-  </section>
-
-  
-
-  <div class="charts">
-    <div>
-      <h3 class="text-xl font-semibold text-gray-700 mb-3">Category Chart</h3>
-      <canvas id="categoryChart"></canvas>
+    <div class="charts">
+      <div>
+        <h3 class="text-xl font-semibold text-gray-700 mb-3">Category Chart</h3>
+        <canvas id="categoryChart"></canvas>
+      </div>
+      <div>
+        <h3 class="text-xl font-semibold text-gray-700 mb-3">Time Chart</h3>
+        <canvas id="timeChart"></canvas>
+      </div>
+      <div>
+        <h3 class="text-xl font-semibold text-gray-700 mb-3">
+          Dashboard Category Chart
+        </h3>
+        <canvas id="dashboardCategoryChart"></canvas>
+      </div>
+      <div>
+        <h3 class="text-xl font-semibold text-gray-700 mb-3">
+          Dashboard Time Chart
+        </h3>
+        <canvas id="dashboardTimeChart"></canvas>
+      </div>
     </div>
-    <div>
-      <h3 class="text-xl font-semibold text-gray-700 mb-3">Time Chart</h3>
-      <canvas id="timeChart"></canvas>
-    </div>
-    <div>
-      <h3 class="text-xl font-semibold text-gray-700 mb-3">Dashboard Category Chart</h3>
-      <canvas id="dashboardCategoryChart"></canvas>
-    </div>
-    <div>
-      <h3 class="text-xl font-semibold text-gray-700 mb-3">Dashboard Time Chart</h3>
-      <canvas id="dashboardTimeChart"></canvas>
-    </div>
-  </div>
 
-  <div id="toastContainer"></div>
+    <div id="toastContainer"></div>
 
-  <!-- Footer -->
-  <footer class="site-footer">
-    <div class="container">
-      <p>&copy; 2025 Harvion Technologies. All rights reserved.</p>
-    </div>
-  </footer>
+    <!-- Footer -->
+    <footer class="bg-green-700 text-white mt-12">
+      <div class="max-w-7xl mx-auto px-4 py-6 text-center text-sm">
+        &copy; 2025 Harvion Technologies. All rights reserved.
+      </div>
+    </footer>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="main.js"></script>
-  <script src="toast.js"></script>
-</body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+
+    <script src="main.js"></script>
+    <script src="toast.js"></script>
+  </body>
 </html>
