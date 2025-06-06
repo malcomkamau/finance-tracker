@@ -304,31 +304,51 @@
     <button type="submit">Add Transaction</button>
   </form> -->
 
-  <div class="filters">
-  <input type="text" id="searchText" placeholder="Search..." />
-  <input type="date" id="startDate" />
-  <input type="date" id="endDate" />
-  
-  <select id="categoryFilter">
-    <option value="">All Categories</option>
-    <!-- Add options dynamically or manually -->
-  </select>
+    <div class="flex flex-wrap gap-4 items-center mb-4">
+      <input
+        type="text"
+        class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+        id="searchText"
+        placeholder="Search..."
+      />
+      <input
+        type="date"
+        class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+        id="startDate"
+        placeholder="After"
+      />
+      <input
+        type="date"
+        class="border border-gray-300 rounded px-3 py-2 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+        id="endDate"
+        placeholder="Before"
+      />
 
-  <select id="paymentMethodFilter">
-    <option value="">All Payment Methods</option>
-    <!-- Add options dynamically or manually -->
-  </select>
+      <select
+        class="border border-gray-300 rounded px-3 py-2 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+        id="categoryFilter"
+      >
+        <option value="">All Categories</option>
+        <!-- Add options dynamically or manually -->
+      </select>
 
-  <button id="applyFiltersBtn">Apply Filters</button>
-  <button id="resetFiltersBtn">Reset</button>
-</div>
+      <select
+        class="border border-gray-300 rounded px-3 py-2 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+        id="paymentMethodFilter"
+      >
+        <option value="">All Payment Methods</option>
+        <!-- Add options dynamically or manually -->
+      </select>
 
-<div class="export-buttons">
-  <button id="exportCSV">Export CSV</button>
-  <button id="exportExcel">Export Excel</button>
-  <button id="exportPDF">Export PDF</button>
-</div>
+      <button id="applyFiltersBtn">Apply Filters</button>
+      <button id="resetFiltersBtn">Reset</button>
+    </div>
 
+    <div class="export-buttons">
+      <button id="exportCSV">Export CSV</button>
+      <button id="exportExcel">Export Excel</button>
+      <button id="exportPDF">Export PDF</button>
+    </div>
 
     <section class="table-section px-4 sm:px-8 lg:px-16 py-6">
       <h2 class="text-2xl font-bold text-green-900 mb-4">
