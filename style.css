@@ -1,0 +1,187 @@
+/* Base styling */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 2rem;
+  background-color: #f9fafb;
+  color: #333;
+}
+
+/* Headings */
+h2, h3 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+/* Form styling */
+form#transactionForm {
+  max-width: 400px;
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+  margin-bottom: 2rem;
+}
+
+form#transactionForm input,
+form#transactionForm select,
+form#transactionForm button {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+form#transactionForm input:focus,
+form#transactionForm select:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+form#transactionForm button {
+  background-color: #3498db;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+form#transactionForm button:hover {
+  background-color: #2980b9;
+}
+
+/* Filters */
+#filters {
+  max-width: 700px;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+#filters input[type="text"],
+#filters input[type="date"],
+#filters select {
+  padding: 0.4rem 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  flex: 1 1 150px;
+  min-width: 150px;
+}
+
+#filters button {
+  padding: 0.5rem 1rem;
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+#filters button:hover {
+  background-color: #1e8449;
+}
+
+/* Export options */
+h3 + label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button {
+  margin-right: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  background-color: #34495e;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #2c3e50;
+}
+
+/* Table styling */
+table#transactionTable {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgb(0 0 0 / 0.1);
+  margin-bottom: 3rem;
+}
+
+table#transactionTable thead {
+  background-color: #3498db;
+  color: white;
+}
+
+table#transactionTable th,
+table#transactionTable td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+table#transactionTable tbody tr:hover {
+  background-color: #f1f9ff;
+}
+
+table#transactionTable tfoot td {
+  font-weight: 700;
+  background-color: #ecf0f1;
+}
+
+canvas#categoryChart,
+canvas#timeChart {
+  max-width: 100%;
+  width: 500px;   /* or any size you want */
+  height: 250px;  /* adjust height to maintain aspect ratio */
+  border: 1px solid #ddd;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  #filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  form#transactionForm {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  canvas#categoryChart,
+  canvas#timeChart {
+    width: 100%;
+    height: 200px;
+  }
+}
+
