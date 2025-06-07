@@ -1,99 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finance Tracker</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
+    <!-- Link CSS file here -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Finance Tracker</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
-  <!-- Link CSS file here -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.css" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-</head>
-
-<body>
-  <div id="loadingSpinner" style="display: none" class="fixed top-4 right-4 z-50">
-    <div class="loader"></div>
-  </div>
-  <!-- Header -->
-  <header class="bg-green-700 text-white shadow-md">
-    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-      <!-- Placeholder for future logo or nav -->
-      <!-- <img src="/favicon.png" alt="Logo" class="h-8" /> -->
-      <h1 class="text-2xl text-white font-bold tracking-wide">
-        Harvion Technologies
-      </h1>
+  <body>
+    <div
+      id="loadingSpinner"
+      style="display: none"
+      class="fixed top-4 right-4 z-50"
+    >
+      <div class="loader"></div>
     </div>
-  </header>
+    <!-- Header -->
+    <header class="bg-green-700 text-white shadow-md">
+      <div
+        class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <!-- Placeholder for future logo or nav -->
+        <!-- <img src="/favicon.png" alt="Logo" class="h-8" /> -->
+        <h1 class="text-2xl text-white font-bold tracking-wide">
+          Harvion Technologies
+        </h1>
+      </div>
+    </header>
 
-  <!-- Dashboard -->
-  <section class="bg-white py-6 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4">
-      <h2 class="text-2xl font-bold text-green-800 mb-6">
-        Dashboard Summary
-      </h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        <div class="bg-green-100 border-l-4 border-green-700 p-4 rounded-md shadow flex items-center gap-4">
-          <i data-lucide="list-check" class="text-green-700 w-6 h-6"></i>
-          <div>
-            <span class="text-sm font-medium text-green-800">Total Transactions</span>
-            <p id="totalTransactions" class="text-2xl font-bold text-green-900 mt-1">
-              0
-            </p>
+    <!-- Dashboard -->
+    <section class="bg-white py-6 shadow-sm">
+      <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-2xl font-bold text-green-800 mb-6">
+          Dashboard Summary
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <div
+            class="bg-green-100 border-l-4 border-green-700 p-4 rounded-md shadow flex items-center gap-4"
+          >
+            <i data-lucide="list-check" class="text-green-700 w-6 h-6"></i>
+            <div>
+              <span class="text-sm font-medium text-green-800"
+                >Total Transactions</span
+              >
+              <p
+                id="totalTransactions"
+                class="text-2xl font-bold text-green-900 mt-1"
+              >
+                0
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="bg-green-100 border-l-4 border-green-700 p-4 rounded-md shadow flex items-center gap-4"
+          >
+            <i data-lucide="package" class="text-green-700 w-6 h-6"></i>
+            <div>
+              <span class="text-sm font-medium text-green-800"
+                >Total Quantity</span
+              >
+              <p
+                id="totalQuantity"
+                class="text-2xl font-bold text-green-900 mt-1"
+              >
+                0
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="bg-green-100 border-l-4 border-green-700 p-4 rounded-md shadow flex items-center gap-4"
+          >
+            <i data-lucide="wallet" class="text-green-700 w-6 h-6"></i>
+            <div>
+              <span class="text-sm font-medium text-green-800"
+                >Total Spending (Kes)</span
+              >
+              <p
+                id="totalSpending"
+                class="text-2xl font-bold text-green-900 mt-1"
+              >
+                0.00
+              </p>
+            </div>
           </div>
         </div>
-
-        <div class="bg-green-100 border-l-4 border-green-700 p-4 rounded-md shadow flex items-center gap-4">
-          <i data-lucide="package" class="text-green-700 w-6 h-6"></i>
-          <div>
-            <span class="text-sm font-medium text-green-800">Total Quantity</span>
-            <p id="totalQuantity" class="text-2xl font-bold text-green-900 mt-1">
-              0
-            </p>
+        <div class="charts">
+          <!-- Category Chart -->
+          <div id="categoryChartContainer">
+            <h3 class="text-xl font-semibold text-gray-700 mb-3">
+              Dashboard Category Chart
+            </h3>
+            <canvas id="categoryChart"></canvas>
+            <div
+              id="noCategoryData"
+              class="hidden text-center text-gray-500 italic py-10 w-full"
+            >
+              No chart data available.
+            </div>
           </div>
-        </div>
 
-        <div class="bg-green-100 border-l-4 border-green-700 p-4 rounded-md shadow flex items-center gap-4">
-          <i data-lucide="wallet" class="text-green-700 w-6 h-6"></i>
-          <div>
-            <span class="text-sm font-medium text-green-800">Total Spending (Kes)</span>
-            <p id="totalSpending" class="text-2xl font-bold text-green-900 mt-1">
-              0.00
-            </p>
+          <!-- Monthly Chart -->
+          <div id="monthlyChartContainer">
+            <h3 class="text-xl font-semibold text-gray-700 mb-3">
+              Dashboard Time Chart
+            </h3>
+            <canvas id="monthlyChart"></canvas>
+            <div
+              id="noMonthlyData"
+              class="hidden text-center text-gray-500 italic py-10 w-full"
+            >
+              No chart data available.
+            </div>
           </div>
         </div>
       </div>
-      <div class="charts">
-        <!-- Category Chart -->
-        <div id="categoryChartContainer">
-          <h3 class="text-xl font-semibold text-gray-700 mb-3">
-            Dashboard Category Chart
-          </h3>
-          <canvas id="categoryChart"></canvas>
-          <div id="noCategoryData" class="hidden text-center text-gray-500 italic py-10 w-full">
-            No chart data available.
-          </div>
-        </div>
+    </section>
 
-        <!-- Monthly Chart -->
-        <div id="monthlyChartContainer">
-          <h3 class="text-xl font-semibold text-gray-700 mb-3">
-            Dashboard Time Chart
-          </h3>
-          <canvas id="monthlyChart"></canvas>
-          <div id="noMonthlyData" class="hidden text-center text-gray-500 italic py-10 w-full">
-            No chart data available.
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Form Section -->
-  <!-- <section class="form-section">
+    <!-- Form Section -->
+    <!-- <section class="form-section">
       <h2>Add New Transaction</h2>
       <form id="transactionForm" class="transaction-form">
 
@@ -141,67 +176,131 @@
       </form>
    </section> -->
 
-  <section class="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto mt-6">
-    <h2 class="text-2xl font-bold text-gray-800 mb-4">Add New Transaction</h2>
-    <form id="transactionForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div>
-        <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
-        <input type="date" name="Date" id="date" required
-          class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500" />
-      </div>
+    <section class="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto mt-6">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">Add New Transaction</h2>
+      <form id="transactionForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label for="date" class="block text-sm font-medium text-gray-700"
+            >Date</label
+          >
+          <input
+            type="date"
+            name="Date"
+            id="date"
+            required
+            class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
 
-      <div>
-        <label for="itemName" class="block text-sm font-medium text-gray-700">Item Name</label>
-        <input type="text" name="Item Name" id="itemName" required placeholder="e.g. Cement"
-          class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500" />
-      </div>
+        <div>
+          <label for="itemName" class="block text-sm font-medium text-gray-700"
+            >Item Name</label
+          >
+          <input
+            type="text"
+            name="Item Name"
+            id="itemName"
+            required
+            placeholder="e.g. Cement"
+            class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
 
-      <div>
-        <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
-        <input type="text" name="Category" id="category" required placeholder="e.g. Materials"
-          class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500" />
-      </div>
+        <div>
+          <label for="category" class="block text-sm font-medium text-gray-700"
+            >Category</label
+          >
+          <input
+            type="text"
+            name="Category"
+            id="category"
+            required
+            placeholder="e.g. Materials"
+            class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
 
-      <div>
-        <label for="qty" class="block text-sm font-medium text-gray-700">Quantity</label>
-        <input type="number" name="Quantity" id="qty" required step="1" placeholder="e.g. 10"
-          class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500" />
-      </div>
+        <div>
+          <label for="qty" class="block text-sm font-medium text-gray-700"
+            >Quantity</label
+          >
+          <input
+            type="number"
+            name="Quantity"
+            id="qty"
+            required
+            step="1"
+            placeholder="e.g. 10"
+            class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
 
-      <div>
-        <label for="ppu" class="block text-sm font-medium text-gray-700">Price Per Unit</label>
-        <input type="number" name="Price Per Unit" id="ppu" required step="1" placeholder="e.g. 300"
-          class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500" />
-      </div>
+        <div>
+          <label for="ppu" class="block text-sm font-medium text-gray-700"
+            >Price Per Unit</label
+          >
+          <input
+            type="number"
+            name="Price Per Unit"
+            id="ppu"
+            required
+            step="1"
+            placeholder="e.g. 300"
+            class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
 
-      <div>
-        <label for="vendor" class="block text-sm font-medium text-gray-700">Vendor</label>
-        <input type="text" name="Vendor" id="vendor" placeholder="Optional"
-          class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500" />
-      </div>
+        <div>
+          <label for="vendor" class="block text-sm font-medium text-gray-700"
+            >Vendor</label
+          >
+          <input
+            type="text"
+            name="Vendor"
+            id="vendor"
+            placeholder="Optional"
+            class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
 
-      <div>
-        <label for="pm" class="block text-sm font-medium text-gray-700">Payment Method</label>
-        <input type="text" name="Payment Method" id="pm" placeholder="e.g. Cash, M-PESA"
-          class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500" />
-      </div>
+        <div>
+          <label for="pm" class="block text-sm font-medium text-gray-700"
+            >Payment Method</label
+          >
+          <input
+            type="text"
+            name="Payment Method"
+            id="pm"
+            placeholder="e.g. Cash, M-PESA"
+            class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
 
-      <div>
-        <label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
-        <input type="text" name="Notes" id="notes" placeholder="Additional info"
-          class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500" />
-      </div>
+        <div>
+          <label for="notes" class="block text-sm font-medium text-gray-700"
+            >Notes</label
+          >
+          <input
+            type="text"
+            name="Notes"
+            id="notes"
+            placeholder="Additional info"
+            class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
 
-      <div class="md:col-span-2">
-        <button type="submit"
-          class="bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-md shadow-sm transition duration-200">
-          Add Transaction
-        </button>
-      </div>
-    </form>
-  </section>
+        <div class="md:col-span-2">
+          <button
+            type="submit"
+            class="bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-md shadow-sm transition duration-200"
+          >
+            Add Transaction
+          </button>
+        </div>
+      </form>
+    </section>
 
-  <!-- <form id="transactionForm">
+    <!-- <form id="transactionForm">
     <h2>Add Transaction</h2>
     <input name="Date" type="date" required placeholder="Date" />
 
@@ -222,159 +321,190 @@
     <button type="submit">Add Transaction</button>
   </form> -->
 
-  <div class="flex flex-wrap gap-3 items-center mb-6 p-4 bg-green-50 border border-green-200 rounded-lg shadow">
-    <input type="text"
-      class="bg-white border border-green-700 text-green-900 placeholder-green-600 rounded px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition"
-      id="searchText" placeholder="Search..." />
-    <input type="date"
-      class="bg-white border border-green-700 text-green-900 placeholder-green-600 rounded px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition"
-      id="startDate" placeholder="After" />
-    <input type="date"
-      class="border border-gray-300 rounded px-3 py-2 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 shadow-sm"
-      id="endDate" placeholder="Before" />
+    <div
+      class="flex flex-wrap gap-3 items-center mb-6 p-4 bg-green-50 border border-green-200 rounded-lg shadow"
+    >
+      <input
+        type="text"
+        class="bg-white border border-green-700 text-green-900 placeholder-green-600 rounded px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition"
+        id="searchText"
+        placeholder="Search..."
+      />
+      <input
+        type="date"
+        class="bg-white border border-green-700 text-green-900 placeholder-green-600 rounded px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition"
+        id="startDate"
+        placeholder="After"
+      />
+      <input
+        type="date"
+        class="border border-gray-300 rounded px-3 py-2 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 shadow-sm"
+        id="endDate"
+        placeholder="Before"
+      />
 
-    <select
-      class="border border-gray-300 rounded px-3 py-2 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 shadow-sm"
-      id="categoryFilter">
-      <option value="">All Categories</option>
-      <!-- Add options dynamically or manually -->
-    </select>
+      <select
+        class="border border-gray-300 rounded px-3 py-2 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 shadow-sm"
+        id="categoryFilter"
+      >
+        <option value="">All Categories</option>
+        <!-- Add options dynamically or manually -->
+      </select>
 
-    <select
-      class="border border-gray-300 rounded px-3 py-2 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 shadow-sm"
-      id="paymentMethodFilter">
-      <option value="">All Payment Methods</option>
-      <!-- Add options dynamically or manually -->
-    </select>
+      <select
+        class="border border-gray-300 rounded px-3 py-2 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 shadow-sm"
+        id="paymentMethodFilter"
+      >
+        <option value="">All Payment Methods</option>
+        <!-- Add options dynamically or manually -->
+      </select>
 
-    <button
-      class="bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-md shadow-sm transition duration-200"
-      id="applyFiltersBtn">
-      Apply Filters
-    </button>
-    <button
-      class="bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-md shadow-sm transition duration-200"
-      id="resetFiltersBtn">
-      Reset
-    </button>
-  </div>
-
-
-  <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown"
-    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-    type="button">Dropdown button <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-      fill="none" viewBox="0 0 10 6">
-      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
-    </svg>
-  </button>
-
-  <!-- Dropdown menu -->
-  <div id="dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-green-700">
-    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-      <li>
-        <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Export</a>
-      </li>
-      <li>
-        <button id="exportCSV" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Export CSV</button>
-      </li>
-      <li>
-        <button id="exportExcel" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Export Excel</button>
-      </li>
-      <li>
-        <button id="exportPDF" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Export PDF</button>
-      </li>
-    </ul>
-  </div>
-
-
-  <!-- <div class="export-buttons px-4 py-6 mt-6 flex flex-wrap gap-4 justify-start bg-white rounded-lg shadow-sm">
-    <button
-      class="bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-md shadow-sm transition duration-200"
-      id="exportCSV">
-      Export CSV
-    </button>
-    <button
-      class="bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-md shadow-sm transition duration-200"
-      id="exportExcel">
-      Export Excel
-    </button>
-    <button
-      class="bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-md shadow-sm transition duration-200"
-      id="exportPDF">
-      Export PDF
-    </button>
-  </div> -->
-
-  <section class="table-section px-4 sm:px-8 lg:px-16 py-6">
-    <h2 class="text-2xl font-bold text-green-900 mb-4">
-      Transaction Records
-    </h2>
-    <div class="overflow-x-auto rounded-lg shadow ring-1 ring-black/5">
-      <table id="transactionTable" class="min-w-full bg-white text-sm text-left">
-        <thead class="bg-green-100 text-green-900 font-semibold">
-          <tr>
-            <th class="px-4 py-3">Date</th>
-            <th class="px-4 py-3">Item Name</th>
-            <th class="px-4 py-3">Category</th>
-            <th class="px-4 py-3">Quantity</th>
-            <th class="px-4 py-3">Price Per Unit</th>
-            <th class="px-4 py-3">Vendor</th>
-            <th class="px-4 py-3">Payment Method</th>
-            <th class="px-4 py-3">Notes</th>
-            <th class="px-4 py-3">Total (Kes)</th>
-            <th class="px-4 py-3">Actions</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody" class="divide-y divide-gray-200">
-          <!-- Rows will be injected dynamically via JS -->
-          <tr>
-            <td colspan="100%" class="text-center py-6 text-gray-500 italic">
-              No transactions to display.
-            </td>
-          </tr>
-        </tbody>
-        <tfoot class="bg-green-50 font-medium text-green-800">
-          <tr>
-            <td colspan="8" class="px-4 py-3 text-right">Total</td>
-            <td id="totalRow" class="px-4 py-3">0.00</td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-  </section>
-
-  <!-- Pagination -->
-  <div id="paginationControls" class="flex justify-center mt-4"></div>
-
-  <!-- Edit Modal -->
-  <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-md relative">
-      <button class="absolute top-2 right-2 text-gray-500 hover:text-gray-700" onclick="closeEditModal()">
-        ✕
+      <button
+        class="bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-md shadow-sm transition duration-200"
+        id="applyFiltersBtn"
+      >
+        Apply Filters
       </button>
-      <h2 class="text-xl font-semibold mb-4">Edit Transaction</h2>
-      <form id="editForm" onsubmit="submitEdit(event)">
-        <input type="hidden" id="editIndex" />
-        <input type="text" id="editDescription" placeholder="Description" class="border p-2 w-full mb-2" required />
-        <input type="number" id="editAmount" placeholder="Amount" class="border p-2 w-full mb-2" required />
-        <input type="date" id="editDate" class="border p-2 w-full mb-2" required />
-        <input type="text" id="editCategory" placeholder="Category" class="border p-2 w-full mb-2" required />
-        <select id="editPaymentMethod" class="border p-2 w-full mb-2" required>
-          <option value="">Select Payment Method</option>
-          <option value="Cash">Cash</option>
-          <option value="Credit Card">Credit Card</option>
-          <option value="Bank Transfer">Bank Transfer</option>
-        </select>
-        <div class="flex justify-end">
-          <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">
-            Save
-          </button>
-        </div>
-      </form>
+      <button
+        class="bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-md shadow-sm transition duration-200"
+        id="resetFiltersBtn"
+      >
+        Reset
+      </button>
     </div>
-  </div>
 
-  <!-- <div class="charts">
+    <div
+      class="export-buttons px-4 py-6 mt-6 flex flex-wrap gap-4 justify-start bg-white rounded-lg shadow-sm"
+    >
+      <button
+        class="bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-md shadow-sm transition duration-200"
+        id="exportCSV"
+      >
+        Export CSV
+      </button>
+      <button
+        class="bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-md shadow-sm transition duration-200"
+        id="exportExcel"
+      >
+        Export Excel
+      </button>
+      <button
+        class="bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-md shadow-sm transition duration-200"
+        id="exportPDF"
+      >
+        Export PDF
+      </button>
+    </div>
+
+    <section class="table-section px-4 sm:px-8 lg:px-16 py-6">
+      <h2 class="text-2xl font-bold text-green-900 mb-4">
+        Transaction Records
+      </h2>
+      <div class="overflow-x-auto rounded-lg shadow ring-1 ring-black/5">
+        <table
+          id="transactionTable"
+          class="min-w-full bg-white text-sm text-left"
+        >
+          <thead class="bg-green-100 text-green-900 font-semibold">
+            <tr>
+              <th class="px-4 py-3">Date</th>
+              <th class="px-4 py-3">Item Name</th>
+              <th class="px-4 py-3">Category</th>
+              <th class="px-4 py-3">Quantity</th>
+              <th class="px-4 py-3">Price Per Unit</th>
+              <th class="px-4 py-3">Vendor</th>
+              <th class="px-4 py-3">Payment Method</th>
+              <th class="px-4 py-3">Notes</th>
+              <th class="px-4 py-3">Total (Kes)</th>
+              <th class="px-4 py-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody" class="divide-y divide-gray-200">
+            <!-- Rows will be injected dynamically via JS -->
+            <tr>
+              <td colspan="100%" class="text-center py-6 text-gray-500 italic">
+                No transactions to display.
+              </td>
+            </tr>
+          </tbody>
+          <tfoot class="bg-green-50 font-medium text-green-800">
+            <tr>
+              <td colspan="8" class="px-4 py-3 text-right">Total</td>
+              <td id="totalRow" class="px-4 py-3">0.00</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- Pagination -->
+    <div id="paginationControls" class="flex justify-center mt-4"></div>
+
+    <!-- Edit Modal -->
+    <div
+      id="editModal"
+      class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50"
+    >
+      <div class="bg-white p-6 rounded shadow-md w-full max-w-md relative">
+        <button
+          class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+          onclick="closeEditModal()"
+        >
+          ✕
+        </button>
+        <h2 class="text-xl font-semibold mb-4">Edit Transaction</h2>
+        <form id="editForm" onsubmit="submitEdit(event)">
+          <input type="hidden" id="editIndex" />
+          <input
+            type="text"
+            id="editDescription"
+            placeholder="Description"
+            class="border p-2 w-full mb-2"
+            required
+          />
+          <input
+            type="number"
+            id="editAmount"
+            placeholder="Amount"
+            class="border p-2 w-full mb-2"
+            required
+          />
+          <input
+            type="date"
+            id="editDate"
+            class="border p-2 w-full mb-2"
+            required
+          />
+          <input
+            type="text"
+            id="editCategory"
+            placeholder="Category"
+            class="border p-2 w-full mb-2"
+            required
+          />
+          <select
+            id="editPaymentMethod"
+            class="border p-2 w-full mb-2"
+            required
+          >
+            <option value="">Select Payment Method</option>
+            <option value="Cash">Cash</option>
+            <option value="Credit Card">Credit Card</option>
+            <option value="Bank Transfer">Bank Transfer</option>
+          </select>
+          <div class="flex justify-end">
+            <button
+              type="submit"
+              class="bg-green-500 text-white px-4 py-2 rounded"
+            >
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- <div class="charts">
       <div>
         <h3 class="text-xl font-semibold text-gray-700 mb-3">Category Chart</h3>
         <canvas id="categoryChart"></canvas>
@@ -385,25 +515,24 @@
       </div>
     </div> -->
 
-  <!-- <div id="toastContainer"></div> -->
+    <!-- <div id="toastContainer"></div> -->
 
-  <!-- Footer -->
-  <footer class="bg-green-700 text-white mt-12">
-    <div class="max-w-7xl mx-auto px-4 py-6 text-center text-sm">
-      &copy; 2025 Harvion Technologies. All rights reserved.
-    </div>
-  </footer>
+    <!-- Footer -->
+    <footer class="bg-green-700 text-white mt-12">
+      <div class="max-w-7xl mx-auto px-4 py-6 text-center text-sm">
+        &copy; 2025 Harvion Technologies. All rights reserved.
+      </div>
+    </footer>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    lucide.createIcons();
-  </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
 
-  <script src="main.js"></script>
-  <!-- <script src="toast.js"></script> -->
-</body>
-
+    <script src="main.js"></script>
+    <!-- <script src="toast.js"></script> -->
+  </body>
 </html>
