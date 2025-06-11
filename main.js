@@ -267,7 +267,13 @@ function renderTransactionsTable(transactions) {
         <td class="px-4 py-3">${t["Payment Method"] || ""}</td>
         <td class="px-4 py-3">${t.Notes || ""}</td>
         <td class="px-4 py-3">${total.toFixed(2)}</td>
-        // <td class="px-4 py-3 flex space-x-2">
+        
+      </tr>
+    `;
+    }).join("");
+
+    // To add the delete and edit buttons, add the lines of code  below immediately after the last td
+    // <td class="px-4 py-3 flex space-x-2">
         //   <button
         //     class="edit-btn bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm"
         //     data-id="${t.id}" title="Edit"
@@ -277,9 +283,6 @@ function renderTransactionsTable(transactions) {
         //     data-id="${t.id}" title="Delete"
         //   >Delete</button>
         // </td>
-      </tr>
-    `;
-    }).join("");
 
     attachEditDeleteListeners(tbody);
 
