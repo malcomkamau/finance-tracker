@@ -373,7 +373,9 @@
       </button>
     </div>
 
-    <div
+    <!-- Export buttons -->
+
+    <!-- <div
       class="export-buttons px-4 py-6 mt-6 flex flex-wrap gap-4 justify-start bg-white rounded-lg shadow-sm"
     >
       <button
@@ -394,7 +396,43 @@
       >
         Export PDF
       </button>
+    </div> -->
+
+    <div class="relative inline-block text-left px-4 py-6 mt-6">
+  <div>
+    <button
+      type="button"
+      id="exportMenuButton"
+      class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-green-700 text-sm font-medium text-white hover:bg-green-800 focus:outline-none"
+      onclick="toggleExportMenu()"
+    >
+      <span class="flex items-center gap-2">
+        <i data-lucide="download" class="w-4 h-4"></i>
+        Export
+        <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </span>
+    </button>
+  </div>
+
+  <div
+    id="exportMenu"
+    class="origin-top-left absolute left-0 mt-2 w-44 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden z-10"
+  >
+    <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="exportMenuButton">
+      <button id="exportCSV" class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+        <i data-lucide="file-text" class="w-4 h-4"></i> Export CSV
+      </button>
+      <button id="exportExcel" class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+        <i data-lucide="table" class="w-4 h-4"></i> Export Excel
+      </button>
+      <button id="exportPDF" class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+        <i data-lucide="file" class="w-4 h-4"></i> Export PDF
+      </button>
     </div>
+  </div>
+</div>
 
     <section class="table-section px-4 sm:px-8 lg:px-16 py-6">
       <h2 class="text-2xl font-bold text-green-900 mb-4">
@@ -530,6 +568,19 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
       lucide.createIcons();
+
+      function toggleExportMenu() {
+    const menu = document.getElementById("exportMenu");
+    menu.classList.toggle("hidden");
+  }
+
+  window.addEventListener("click", function (e) {
+    const menu = document.getElementById("exportMenu");
+    const button = document.getElementById("exportMenuButton");
+    if (!button.contains(e.target) && !menu.contains(e.target)) {
+      menu.classList.add("hidden");
+    }
+  });
     </script>
 
     <script src="main.js"></script>
