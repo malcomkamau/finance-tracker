@@ -27,9 +27,7 @@
     </div>
     <!-- Header -->
     <header class="bg-green-700 text-white shadow-md">
-      <div
-        class="max-w-7xl mx-auto px-4 py-4 flex justify-center items-center"
-      >
+      <div class="max-w-7xl mx-auto px-4 py-4 flex justify-center items-center">
         <!-- Placeholder for future logo or nav -->
         <img src="favicon.png" alt="Logo" class="h-8" />
         <h1 class="text-2xl text-white font-bold tracking-wide">
@@ -400,48 +398,58 @@
     </div> -->
 
     <div class="relative inline-block text-left px-4 py-6 mt-6">
-  <button
-    id="exportMenuButton"
-    onclick="toggleExportMenu()"
-    class="inline-flex items-center gap-2 px-4 py-2 bg-green-700 text-white font-medium text-sm rounded-md shadow hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-500"
-  >
-    <i data-lucide="download" class="w-4 h-4"></i>
-    Export
-    <svg class="w-4 h-4 ml-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-    </svg>
-  </button>
+      <button
+        id="exportMenuButton"
+        onclick="toggleExportMenu()"
+        class="inline-flex items-center gap-2 px-4 py-2 bg-green-700 text-white font-medium text-sm rounded-md shadow hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-500"
+      >
+        <i data-lucide="download" class="w-4 h-4"></i>
+        Export
+        <svg
+          class="w-4 h-4 ml-1"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </button>
 
-  <div
-    id="exportMenu"
-    class="hidden absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-10"
-  >
-    <div class="py-1 px-1 text-sm text-green-700">
-      
-      <button
-        class="w-full flex items-center gap-2 bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-md shadow-sm transition duration-200"
-        id="exportCSV"
+      <div
+        id="exportMenu"
+        class="hidden absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-10"
       >
-        <i data-lucide="file-text" class="w-4 h-4"></i>
-        CSV
-      </button>
-      <button
-        id="exportExcel"
-        class="w-full flex items-center gap-2 bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-md shadow-sm transition duration-200"
-      >
-        <i data-lucide="table" class="w-4 h-4"></i>
-        Excel
-      </button>
-      <button
-        id="exportPDF"
-        class="w-full flex items-center gap-2 bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-md shadow-sm transition duration-200"
-      >
-        <i data-lucide="file" class="w-4 h-4"></i>
-        PDF
-      </button>
+        <div class="py-1 px-1 text-sm text-green-700">
+          <button
+            class="w-full flex items-center gap-2 bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-md shadow-sm transition duration-200"
+            id="exportCSV"
+          >
+            <i data-lucide="file-text" class="w-4 h-4"></i>
+            CSV
+          </button>
+          <button
+            id="exportExcel"
+            class="w-full flex items-center gap-2 bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-md shadow-sm transition duration-200"
+          >
+            <i data-lucide="table" class="w-4 h-4"></i>
+            Excel
+          </button>
+          <button
+            id="exportPDF"
+            class="w-full flex items-center gap-2 bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-md shadow-sm transition duration-200"
+          >
+            <i data-lucide="file" class="w-4 h-4"></i>
+            PDF
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
     <section class="table-section px-4 sm:px-8 lg:px-16 py-6">
       <h2 class="text-2xl font-bold text-green-900 mb-4">
@@ -579,17 +587,17 @@
       lucide.createIcons();
 
       function toggleExportMenu() {
-    const menu = document.getElementById("exportMenu");
-    menu.classList.toggle("hidden");
-  }
+        const menu = document.getElementById("exportMenu");
+        menu.classList.toggle("hidden");
+      }
 
-  window.addEventListener("click", function (e) {
-    const menu = document.getElementById("exportMenu");
-    const button = document.getElementById("exportMenuButton");
-    if (!button.contains(e.target) && !menu.contains(e.target)) {
-      menu.classList.add("hidden");
-    }
-  });
+      window.addEventListener("click", function (e) {
+        const menu = document.getElementById("exportMenu");
+        const button = document.getElementById("exportMenuButton");
+        if (!button.contains(e.target) && !menu.contains(e.target)) {
+          menu.classList.add("hidden");
+        }
+      });
     </script>
 
     <script src="main.js"></script>
