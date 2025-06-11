@@ -619,16 +619,16 @@
       });
 
       // Optional: block other interaction
-      document.body.addEventListener(
-        "click",
-        (e) => {
-          if (authModal.style.display !== "none") {
-            e.stopPropagation();
-            e.preventDefault();
-          }
-        },
-        true
-      );
+      // document.body.addEventListener(
+      //   "click",
+      //   (e) => {
+      //     if (authModal.style.display !== "none") {
+      //       e.stopPropagation();
+      //       e.preventDefault();
+      //     }
+      //   },
+      //   true
+      // );
 
       function toggleExportMenu() {
         const menu = document.getElementById("exportMenu");
