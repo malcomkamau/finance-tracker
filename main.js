@@ -6,27 +6,7 @@ let filteredTransactions = [];
 
 // == DOM READY ==
 document.addEventListener("DOMContentLoaded", () => {
-    loadTransactions();
-
-    const authModal = document.getElementById("authModal");
-  const authLoginBtn = document.getElementById("authLoginBtn");
-  const authUsername = document.getElementById("authUsername");
-  const authPassword = document.getElementById("authPassword");
-  const authError = document.getElementById("authError");
-
-  const VALID_USERNAME = "admin";
-  const VALID_PASSWORD = "123456";
-
-  authLoginBtn.addEventListener("click", () => {
-    const user = authUsername.value.trim();
-    const pass = authPassword.value.trim();
-
-    if (user === VALID_USERNAME && pass === VALID_PASSWORD) {
-      authModal.style.display = "none";
-    } else {
-      authError.textContent = "Invalid credentials. Try again.";
-    }
-  });
+    loadTransactions();    
 
     const form = document.getElementById("transactionForm");
     if (form) {
@@ -240,7 +220,7 @@ function renderTransactionsTable(transactions) {
     const start = (currentPage - 1) * rowsPerPage;
     const end = start + rowsPerPage;
     const paginated = transactions.slice(start, end);
-    
+
     const table = document.getElementById("transactionTable");
     if (!table) return;
 
@@ -294,15 +274,15 @@ function renderTransactionsTable(transactions) {
 
     // To add the delete and edit buttons, add the lines of code  below immediately after the last td
     // <td class="px-4 py-3 flex space-x-2">
-        //   <button
-        //     class="edit-btn bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm"
-        //     data-id="${t.id}" title="Edit"
-        //   >Edit</button>
-        //   <button
-        //     class="delete-btn bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm"
-        //     data-id="${t.id}" title="Delete"
-        //   >Delete</button>
-        // </td>
+    //   <button
+    //     class="edit-btn bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm"
+    //     data-id="${t.id}" title="Edit"
+    //   >Edit</button>
+    //   <button
+    //     class="delete-btn bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm"
+    //     data-id="${t.id}" title="Delete"
+    //   >Delete</button>
+    // </td>
 
     attachEditDeleteListeners(tbody);
 
@@ -343,7 +323,7 @@ function attachEditDeleteListeners(tbody) {
 function populateFormForEdit(id) {
     // const transaction = allTransactions.find(t => String(t.id) === String(id));
     const transaction = allTransactions.find(t => String(t._id) === String(id));
-    
+
     if (!transaction) return;
     const form = document.getElementById("transactionForm");
     if (!form) return;

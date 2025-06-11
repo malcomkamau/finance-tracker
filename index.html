@@ -19,16 +19,44 @@
 
   <body>
     <!-- Authentication Modal -->
-    <div id="authModal" class="auth-modal">
-      <div class="auth-box">
-        <h2>Login</h2>
-        <input type="text" id="authUsername" placeholder="Username" />
-        <input type="password" id="authPassword" placeholder="Password" />
-        <button id="authLoginBtn">Login</button>
-        <p id="authError" class="error-msg"></p>
+    <!-- Modal Backdrop -->
+    <div
+      id="authModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+      <!-- Modal Box -->
+      <div
+        class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm animate-fade-in"
+      >
+        <h2 class="text-2xl font-semibold mb-4 text-center">Login</h2>
+
+        <div class="space-y-4">
+          <input
+            id="authUsername"
+            type="text"
+            placeholder="Username"
+            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            id="authPassword"
+            type="password"
+            placeholder="Password"
+            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
+          <p id="authError" class="text-red-500 text-sm h-5"></p>
+
+          <button
+            id="authLoginBtn"
+            class="w-full bg-blue-600 text-white font-medium py-2 rounded-lg hover:bg-blue-700 transition duration-300"
+          >
+            Login
+          </button>
+        </div>
       </div>
     </div>
 
+    <!-- Spinner -->
     <div
       id="loadingSpinner"
       style="display: none"
@@ -597,38 +625,40 @@
     <script>
       lucide.createIcons();
 
-      // const authModal = document.getElementById("authModal");
-      // const authLoginBtn = document.getElementById("authLoginBtn");
-      // const authUsername = document.getElementById("authUsername");
-      // const authPassword = document.getElementById("authPassword");
-      // const authError = document.getElementById("authError");
+      document.addEventListener("DOMContentLoaded", () => {
+        const modal = document.getElementById("authModal");
+        const loginBtn = document.getElementById("authLoginBtn");
+        const usernameInput = document.getElementById("authUsername");
+        const passwordInput = document.getElementById("authPassword");
+        const errorText = document.getElementById("authError");
 
-      // // Replace with your real credentials or fetch from backend later
-      // const VALID_USERNAME = "admin";
-      // const VALID_PASSWORD = "havion@2025";
+        const correctUsername = "admin";
+        const correctPassword = "1234";
 
-      // authLoginBtn.addEventListener("click", () => {
-      //   const user = authUsername.value.trim();
-      //   const pass = authPassword.value.trim();
+        loginBtn.addEventListener("click", () => {
+          const enteredUsername = usernameInput.value.trim();
+          const enteredPassword = passwordInput.value.trim();
 
-      //   if (user === VALID_USERNAME && pass === VALID_PASSWORD) {
-      //     authModal.style.display = "none";
-      //   } else {
-      //     authError.textContent = "Invalid credentials. Try again.";
-      //   }
-      // });
+          if (
+            enteredUsername === correctUsername &&
+            enteredPassword === correctPassword
+          ) {
+            modal.style.display = "none";
+            errorText.textContent = "";
+            // Enable rest of the UI here (or remove a disabled overlay, etc.)
+            console.log("Login successful!");
+          } else {
+            errorText.textContent = "Invalid username or password.";
+          }
+        });
 
-      // // Optional: block other interaction
-      // // document.body.addEventListener(
-      // //   "click",
-      // //   (e) => {
-      // //     if (authModal.style.display !== "none") {
-      // //       e.stopPropagation();
-      // //       e.preventDefault();
-      // //     }
-      // //   },
-      // //   true
-      // // );
+        // Optional: Pressing Enter triggers login
+        [usernameInput, passwordInput].forEach((input) => {
+          input.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") loginBtn.click();
+          });
+        });
+      });
 
       function toggleExportMenu() {
         const menu = document.getElementById("exportMenu");
