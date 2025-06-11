@@ -267,16 +267,16 @@ function renderTransactionsTable(transactions) {
         <td class="px-4 py-3">${t["Payment Method"] || ""}</td>
         <td class="px-4 py-3">${t.Notes || ""}</td>
         <td class="px-4 py-3">${total.toFixed(2)}</td>
-        <td class="px-4 py-3 flex space-x-2">
-          <button
-            class="edit-btn bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm"
-            data-id="${t.id}" title="Edit"
-          >Edit</button>
-          <button
-            class="delete-btn bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm"
-            data-id="${t.id}" title="Delete"
-          >Delete</button>
-        </td>
+        // <td class="px-4 py-3 flex space-x-2">
+        //   <button
+        //     class="edit-btn bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm"
+        //     data-id="${t.id}" title="Edit"
+        //   >Edit</button>
+        //   <button
+        //     class="delete-btn bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm"
+        //     data-id="${t.id}" title="Delete"
+        //   >Delete</button>
+        // </td>
       </tr>
     `;
     }).join("");
