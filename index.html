@@ -14,6 +14,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   </head>
 
   <body>
@@ -399,36 +400,43 @@
     </div> -->
 
     <div class="relative inline-block text-left px-4 py-6 mt-6">
-  <div>
-    <button
-      type="button"
-      id="exportMenuButton"
-      class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-green-700 text-sm font-medium text-white hover:bg-green-800 focus:outline-none"
-      onclick="toggleExportMenu()"
-    >
-      <span class="flex items-center gap-2">
-        <i data-lucide="download" class="w-4 h-4"></i>
-        Export
-        <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-        </svg>
-      </span>
-    </button>
-  </div>
+  <button
+    id="exportMenuButton"
+    onclick="toggleExportMenu()"
+    class="inline-flex items-center gap-2 px-4 py-2 bg-green-700 text-white font-medium text-sm rounded-md shadow hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-500"
+  >
+    <i data-lucide="download" class="w-4 h-4"></i>
+    Export
+    <svg class="w-4 h-4 ml-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    </svg>
+  </button>
 
   <div
     id="exportMenu"
-    class="origin-top-left absolute left-0 mt-2 w-44 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden z-10"
+    class="hidden absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-10"
   >
-    <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="exportMenuButton">
-      <button id="exportCSV" class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-        <i data-lucide="file-text" class="w-4 h-4"></i> Export CSV
+    <div class="py-1 text-sm text-gray-700">
+      <button
+        id="exportCSV"
+        class="flex items-center w-full px-4 py-2 gap-2 hover:bg-gray-100 transition"
+      >
+        <i data-lucide="file-text" class="w-4 h-4"></i>
+        Export CSV
       </button>
-      <button id="exportExcel" class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-        <i data-lucide="table" class="w-4 h-4"></i> Export Excel
+      <button
+        id="exportExcel"
+        class="flex items-center w-full px-4 py-2 gap-2 hover:bg-gray-100 transition"
+      >
+        <i data-lucide="table" class="w-4 h-4"></i>
+        Export Excel
       </button>
-      <button id="exportPDF" class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-        <i data-lucide="file" class="w-4 h-4"></i> Export PDF
+      <button
+        id="exportPDF"
+        class="flex items-center w-full px-4 py-2 gap-2 hover:bg-gray-100 transition"
+      >
+        <i data-lucide="file" class="w-4 h-4"></i>
+        Export PDF
       </button>
     </div>
   </div>
@@ -563,8 +571,8 @@
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
       lucide.createIcons();
