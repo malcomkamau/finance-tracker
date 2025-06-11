@@ -597,38 +597,38 @@
     <script>
       lucide.createIcons();
 
-      const authModal = document.getElementById("authModal");
-      const authLoginBtn = document.getElementById("authLoginBtn");
-      const authUsername = document.getElementById("authUsername");
-      const authPassword = document.getElementById("authPassword");
-      const authError = document.getElementById("authError");
+      // const authModal = document.getElementById("authModal");
+      // const authLoginBtn = document.getElementById("authLoginBtn");
+      // const authUsername = document.getElementById("authUsername");
+      // const authPassword = document.getElementById("authPassword");
+      // const authError = document.getElementById("authError");
 
-      // Replace with your real credentials or fetch from backend later
-      const VALID_USERNAME = "admin";
-      const VALID_PASSWORD = "havion@2025";
+      // // Replace with your real credentials or fetch from backend later
+      // const VALID_USERNAME = "admin";
+      // const VALID_PASSWORD = "havion@2025";
 
-      authLoginBtn.addEventListener("click", () => {
-        const user = authUsername.value.trim();
-        const pass = authPassword.value.trim();
+      // authLoginBtn.addEventListener("click", () => {
+      //   const user = authUsername.value.trim();
+      //   const pass = authPassword.value.trim();
 
-        if (user === VALID_USERNAME && pass === VALID_PASSWORD) {
-          authModal.style.display = "none";
-        } else {
-          authError.textContent = "Invalid credentials. Try again.";
-        }
-      });
+      //   if (user === VALID_USERNAME && pass === VALID_PASSWORD) {
+      //     authModal.style.display = "none";
+      //   } else {
+      //     authError.textContent = "Invalid credentials. Try again.";
+      //   }
+      // });
 
-      // Optional: block other interaction
-      // document.body.addEventListener(
-      //   "click",
-      //   (e) => {
-      //     if (authModal.style.display !== "none") {
-      //       e.stopPropagation();
-      //       e.preventDefault();
-      //     }
-      //   },
-      //   true
-      // );
+      // // Optional: block other interaction
+      // // document.body.addEventListener(
+      // //   "click",
+      // //   (e) => {
+      // //     if (authModal.style.display !== "none") {
+      // //       e.stopPropagation();
+      // //       e.preventDefault();
+      // //     }
+      // //   },
+      // //   true
+      // // );
 
       function toggleExportMenu() {
         const menu = document.getElementById("exportMenu");

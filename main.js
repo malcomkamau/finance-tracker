@@ -8,6 +8,26 @@ let filteredTransactions = [];
 document.addEventListener("DOMContentLoaded", () => {
     loadTransactions();
 
+    const authModal = document.getElementById("authModal");
+  const authLoginBtn = document.getElementById("authLoginBtn");
+  const authUsername = document.getElementById("authUsername");
+  const authPassword = document.getElementById("authPassword");
+  const authError = document.getElementById("authError");
+
+  const VALID_USERNAME = "admin";
+  const VALID_PASSWORD = "123456";
+
+  authLoginBtn.addEventListener("click", () => {
+    const user = authUsername.value.trim();
+    const pass = authPassword.value.trim();
+
+    if (user === VALID_USERNAME && pass === VALID_PASSWORD) {
+      authModal.style.display = "none";
+    } else {
+      authError.textContent = "Invalid credentials. Try again.";
+    }
+  });
+
     const form = document.getElementById("transactionForm");
     if (form) {
         form.addEventListener("submit", async (e) => {
