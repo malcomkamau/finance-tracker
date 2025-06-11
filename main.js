@@ -304,7 +304,8 @@ function attachEditDeleteListeners(tbody) {
             const id = btn.dataset.id;
             if (confirm("Are you sure you want to delete this transaction?")) {
                 try {
-                    const res = await fetch(`${BASE_URL}/api/transaction/${id}`, { method: "DELETE" });
+                    // changed id to t.id in the await function
+                    const res = await fetch(`${BASE_URL}/api/transaction/${t.id}`, { method: "DELETE" });
                     if (!res.ok) throw new Error("Failed to delete");
                     await loadTransactions();
                     alert("Transaction deleted successfully");
@@ -318,9 +319,10 @@ function attachEditDeleteListeners(tbody) {
 }
 
 function populateFormForEdit(id) {
-    const transaction = allTransactions.find(t => String(t.id) === String(id));
+    // const transaction = allTransactions.find(t => String(t.id) === String(id));
+    
     if (!transaction) return;
-
+    const transaction = allTransactions.find(t => String(t._id) === String(id));
     const form = document.getElementById("transactionForm");
     if (!form) return;
 
