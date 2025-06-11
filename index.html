@@ -18,6 +18,17 @@
   </head>
 
   <body>
+    <!-- Authentication Modal -->
+    <div id="authModal" class="auth-modal">
+      <div class="auth-box">
+        <h2>Login</h2>
+        <input type="text" id="authUsername" placeholder="Username" />
+        <input type="password" id="authPassword" placeholder="Password" />
+        <button id="authLoginBtn">Login</button>
+        <p id="authError" class="error-msg"></p>
+      </div>
+    </div>
+
     <div
       id="loadingSpinner"
       style="display: none"
@@ -585,6 +596,39 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
       lucide.createIcons();
+
+      const authModal = document.getElementById("authModal");
+      const authLoginBtn = document.getElementById("authLoginBtn");
+      const authUsername = document.getElementById("authUsername");
+      const authPassword = document.getElementById("authPassword");
+      const authError = document.getElementById("authError");
+
+      // Replace with your real credentials or fetch from backend later
+      const VALID_USERNAME = "admin";
+      const VALID_PASSWORD = "havion@2025";
+
+      authLoginBtn.addEventListener("click", () => {
+        const user = authUsername.value.trim();
+        const pass = authPassword.value.trim();
+
+        if (user === VALID_USERNAME && pass === VALID_PASSWORD) {
+          authModal.style.display = "none";
+        } else {
+          authError.textContent = "Invalid credentials. Try again.";
+        }
+      });
+
+      // Optional: block other interaction
+      document.body.addEventListener(
+        "click",
+        (e) => {
+          if (authModal.style.display !== "none") {
+            e.stopPropagation();
+            e.preventDefault();
+          }
+        },
+        true
+      );
 
       function toggleExportMenu() {
         const menu = document.getElementById("exportMenu");
