@@ -30,19 +30,11 @@ header {
 }
 
 .title {
-	font-size: 4rem;
+	font-size: 2rem;
 	font-weight: 900;
 	font-family: 'Fauna', sans-serif;
 	text-transform: uppercase;
 	letter-spacing: -0.02em;
-	pointer-events: none;
-	white-space: nowrap;
-	background: linear-gradient(to bottom,
-			rgba(26, 117, 46, 0.35) 30%,
-			rgb(255 255 255 / 0%) 76%);
-	-webkit-background-clip: text;
-	background-clip: text;
-	color: transparent;
 }
 
 .container {
