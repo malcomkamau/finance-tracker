@@ -1,3 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap');
+
+@font-face {
+	font-family: 'Fauna';
+	src: url('./fauna-thin.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
 /* === Base Reset === */
 * {
   box-sizing: border-box;
