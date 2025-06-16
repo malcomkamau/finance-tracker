@@ -31,10 +31,6 @@ body {
 	font-family: 'Fauna', sans-serif;
 	text-transform: uppercase;
 	letter-spacing: -0.02em;
-	position: absolute;
-	top: 45px;
-	left: 50%;
-	transform: translateX(-50%);
 	pointer-events: none;
 	white-space: nowrap;
 	background: linear-gradient(to bottom,
