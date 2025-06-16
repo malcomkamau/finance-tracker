@@ -25,6 +25,10 @@ body {
   margin: 0;
 }
 
+header {
+  background: white;
+}
+
 .title {
 	font-size: 4rem;
 	font-weight: 900;
@@ -67,8 +71,8 @@ h1, h2, h3 {
 }
 
 .logo {
-  width: 5rem;
-  height: 5rem;
+  width: 4rem;
+  height: 4rem;
 }
 
 .company-name {
